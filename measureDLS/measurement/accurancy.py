@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 import torch
 import torchvision
+import torchvision.transforms as transforms
 
 import numpy as np
 import warnings
@@ -39,9 +40,11 @@ class AccurancyMeasurer():
             self.loader = torch.utils.data.DataLoader(
                 dataset=self.dataset, batch_size=10000, shuffle=False)
         elif self.dataset_type == 'CIFAR10':
-            self.dataset = torchvision.datasets.CIFAR10(root='./data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
-            self.loader = torch.utils.data.DataLoader(
-                dataset=self.dataset, batch_size=10000, shuffle=False)
+            transform = transforms.Compose(
+                [transforms.ToTensor(),
+                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+            self.dataset = torchvision.datasets.CIFAR10(root='./data', train=False, transform=transform, download=True)
+            self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=10000, shuffle=False)
         elif self.dataset_type == 'IMAGENET':
             self.dataset = torchvision.datasets.ImageNet(root='./data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
             self.loader = torch.utils.data.DataLoader(
@@ -56,6 +59,8 @@ class AccurancyMeasurer():
         if type(model) == PyTorchModel:
             if self.dataset_type == 'MNIST':
                 return self._measure_PyTorchModel_MNIST_accurancy(model)
+            elif self.dataset_type == 'CIFAR10':
+                return self._measure_PyTorchModel_CIFAR10_accurancy(model)
         else:
             pass
 
@@ -64,17 +69,35 @@ class AccurancyMeasurer():
             correct = 0
             total = 0
 
-            for _, (images, labels) in enumerate(self.loader):
+            for _, (inputs, labels) in enumerate(self.loader):
                 if self.is_input_flatten:
-                    images = images.reshape(-1, 784).to(self.device).numpy()
+                    inputs = inputs.reshape(-1, 784).to(self.device).numpy()
                 else:
-                    images = images.reshape(-1, 1, 28, 28).to(self.device).numpy()
+                    inputs = inputs.reshape(-1, 1, 28, 28).to(self.device).numpy()
 
                 labels = labels.to(self.device).numpy()
-                predictions = np.argmax(model.forward(images), axis=1)
+                predictions = np.argmax(model.forward(inputs), axis=1)
 
                 total += labels.shape[0]
                 correct += (predictions == labels).sum().item()
                 accurancy = (correct/total)
 
+                return accurancy
+
+    def _measure_PyTorchModel_CIFAR10_accurancy(self, model):
+        with torch.no_grad():
+            correct = 0
+            total = 0
+            for _, (inputs, labels) in enumerate(self.loader):
+                if self.is_input_flatten:
+                    inputs = inputs.reshape(-1, 3*32*32).to(self.device).numpy()
+                else:
+                    inputs = inputs.to(self.device).numpy()
+
+                labels = labels.to(self.device).numpy()
+                predictions = np.argmax(model.forward(inputs), axis=1)
+                total += labels.shape[0]
+                correct += (predictions == labels).sum().item()
+                accurancy = (correct/total)
+                
                 return accurancy
