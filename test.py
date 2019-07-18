@@ -24,5 +24,28 @@ class TestMeasureDLS(unittest.TestCase):
         acc = accurancy_measurer.measure_accurancy(wrapped_model)
         self.assertGreaterEqual(acc, 0.98)
 
+
+    def test_sample_model_Pytorch_FC_CIFAR10_accurancy(self):
+        pass 
+
+    def test_sample_model_Pytorch_CNN_CIFAR10_accurancy(self):
+        pass 
+
+    def test_sample_model_Pytorch_FC_IMAGENET_accurancy(self):
+        pass 
+
+    def test_sample_model_Pytorch_CNN_IMAGENET_accurancy(self):
+        pass 
+    
+    def test_pretrained_model_Pytorch_1_accurancy(self):
+        pass 
+
+    def test_pretrained_model_Pytorch_2_accurancy(self):
+        pass 
+
+    def test_pretrained_model_Pytorch_3_accurancy(self):
+        pass 
+
+
 if __name__ == '__main__':
     unittest.main()
