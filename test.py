@@ -2,6 +2,9 @@ import warnings
 import unittest
 
 import measureDLS
+import torch 
+from torchvision import models
+from torchvision import transforms
 
 class TestMeasureDLS(unittest.TestCase):
 
@@ -40,7 +43,19 @@ class TestMeasureDLS(unittest.TestCase):
         self.assertGreaterEqual(acc, 0.6)
 
     def test_sample_model_Pytorch_FC_IMAGENET_accurancy(self):
-        pass 
+        alexnet = models.alexnet(pretrained=True)
+        user_model = alexnet.eval()
+        transform = transforms.Compose([            
+        transforms.Resize(256),                    
+        transforms.CenterCrop(224),                
+        transforms.ToTensor(),                     
+        transforms.Normalize(                      
+        mean=[0.485, 0.456, 0.406],                
+        std=[0.229, 0.224, 0.225]                  
+        )])
+        wrapped_model = measureDLS.models.PyTorchModel(user_model, bounds=(0, 1), num_classes=1000)
+        accurancy_measurer = measureDLS.measurement.AccurancyMeasurer(dataset_type='IMAGENET', is_input_flatten=False)
+        acc = accurancy_measurer.measure_accurancy(wrapped_model)
 
     def test_sample_model_Pytorch_CNN_IMAGENET_accurancy(self):
         pass 

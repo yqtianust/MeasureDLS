@@ -35,10 +35,8 @@ class AccurancyMeasurer():
 
     def _set_dataset(self):
         if self.dataset_type == 'MNIST':
-            self.dataset = torchvision.datasets.MNIST(
-                root='./data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
-            self.loader = torch.utils.data.DataLoader(
-                dataset=self.dataset, batch_size=10000, shuffle=False)
+            self.dataset = torchvision.datasets.MNIST(root='./data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
+            self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=10000, shuffle=False)
         elif self.dataset_type == 'CIFAR10':
             transform = transforms.Compose(
                 [transforms.ToTensor(),
@@ -46,11 +44,8 @@ class AccurancyMeasurer():
             self.dataset = torchvision.datasets.CIFAR10(root='./data', train=False, transform=transform, download=True)
             self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=10000, shuffle=False)
         elif self.dataset_type == 'IMAGENET':
-            self.dataset = torchvision.datasets.ImageNet(root='./data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
-            self.loader = torch.utils.data.DataLoader(
-                dataset=self.dataset, batch_size=10000, shuffle=False)
-        else:
-            pass 
+            self.dataset = torchvision.datasets.ImageNet(root='./data', split='val', download=True)
+            self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=10000, shuffle=False)
 
     def measure_accurancy(self, model):
         assert not (type(self.dataset_type) is None)
@@ -61,6 +56,8 @@ class AccurancyMeasurer():
                 return self._measure_PyTorchModel_MNIST_accurancy(model)
             elif self.dataset_type == 'CIFAR10':
                 return self._measure_PyTorchModel_CIFAR10_accurancy(model)
+            elif self.dataset_type == 'IMAGENET':
+                return self._measure_PyTorchModel_IMAGENET_accurancy(model)
         else:
             pass
 
@@ -101,3 +98,12 @@ class AccurancyMeasurer():
                 accurancy = (correct/total)
                 
                 return accurancy
+
+    def _measure_PyTorchModel_IMAGENET_accurancy(self, model):
+        with torch.no_grad():
+            correct = 0
+            total = 0
+            print(self.dataset)
+            print(self.loader)
+            for _, (inputs, labels) in enumerate(self.loader):
+                print(inputs.shape, labels.shape)
