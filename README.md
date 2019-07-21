@@ -30,5 +30,27 @@ python3 test.py -v
 
 ## Usage 
 
-[quick examples for usage tutorial]
+In Usage section, we will cover description for parameters and some examples for usage. 
+
+### Parameters 
+
+-  <b>measureDLS.measurement.AccurancyMeasurer</b>  
+   Input: dataset_type, transform, is_input_flatten (optinal)
+          
+          dataset_type: 'MNIST', 'CIFAR10', or 'IMAGENET'
+          transform: please input the transform used your training process 
+          is_input_flatten: True or False. (If True, input will be collapsed into 2 dimensions. For instance, (1000, 3, 28, 28) -> (1000, 3*28*28))
+
+### Examples 
+
+Use pretrained model (e.g., resnet34) in Pytorch and measure its accurancy with ImageNet dataset. 
+
+``` python 
+transform = transforms.Compose([...])
+
+user_model = models.resnet34(pretrained=True)
+wrapped_model = measureDLS.models.PyTorchModel(user_model, num_classes=1000)
+accurancy_measurer = measureDLS.measurement.AccurancyMeasurer('IMAGENET', transform, is_input_flatten=False)
+acc = accurancy_measurer.measure_accurancy(wrapped_model)
+```
 
