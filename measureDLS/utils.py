@@ -248,23 +248,23 @@ def load_sample_Pytroch_FC_MNIST():
     input_size, hidden_size, output_size = 784, 64, 10
     model = PytorchFC_MINST(input_size, hidden_size, output_size)
     model.load_state_dict(torch.load(PATH_SAMPLE_PYTORCH_FC_MNIST))
-    return model.eval()
+    return model
 
 
 def load_sample_Pytroch_CNN_MNIST():
     num_of_channels, width, height = 1, 28, 28
     model = PytorchCNN_MNIST(num_of_channels, width, height)
     model.load_state_dict(torch.load(PATH_SAMPLE_PYTORCH_CNN_MNIST))
-    return model.eval()
+    return model
 
 
 def load_sample_Pytroch_FC_CIFAR10():
     model = PytorchFC_CIFAR10()
     model.load_state_dict(torch.load(PATH_SAMPLE_PYTORCH_FC_CIFAR10))
-    return model.eval()
+    return model
 
 
 def load_sample_Pytroch_CNN_CIFAR10():
     model = PytorchCNN_CIFAR10()
     model.load_state_dict(torch.load(PATH_SAMPLE_PYTORCH_CNN_CIFAR10))
-    return model.eval()
+    return model

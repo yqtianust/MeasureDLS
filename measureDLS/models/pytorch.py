@@ -12,9 +12,6 @@ class PyTorchModel(DifferentiableModel):
     ----------
     model : `torch.nn.Module`
         The PyTorch model that should be attacked.
-    bounds : tuple
-        Tuple of lower and upper bound for the pixel values, usually
-        (0, 1) or (0, 255).
     num_classes : int
         Number of classes for which the model will output predictions.
     channel_axis : int
@@ -32,7 +29,6 @@ class PyTorchModel(DifferentiableModel):
     def __init__(
             self,
             model,
-            bounds,
             num_classes,
             channel_axis=1,
             device=None,
@@ -41,9 +37,7 @@ class PyTorchModel(DifferentiableModel):
         # lazy import
         import torch
 
-        super(PyTorchModel, self).__init__(bounds=bounds,
-                                           channel_axis=channel_axis,
-                                           preprocessing=preprocessing)
+        super(PyTorchModel, self).__init__(channel_axis=channel_axis, preprocessing=preprocessing)
 
         self._num_classes = num_classes
 

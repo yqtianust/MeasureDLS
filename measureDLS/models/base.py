@@ -48,9 +48,7 @@ def _create_preprocessing_fn(params):
 
 class Model(ABC):
 
-    def __init__(self, bounds, channel_axis, preprocessing=(0, 1)):
-        assert len(bounds) == 2
-        self._bounds = bounds
+    def __init__(self, channel_axis, preprocessing=(0, 1)):
         self._channel_axis = channel_axis
 
         if not callable(preprocessing):
@@ -63,9 +61,6 @@ class Model(ABC):
 
     def __exit__(self, exc_type, exc_value, traceback):
         return None
-
-    def bounds(self):
-        return self._bounds
 
     def channel_axis(self):
         return self._channel_axis

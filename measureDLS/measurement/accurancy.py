@@ -8,13 +8,16 @@ import numpy as np
 import warnings
 
 from ..models import *
-
-VALID_DATASET_TYPE = ['MNIST', 'CIFAR10', 'IMAGENET']
-VALID_DATASET_TYPE_STR = '/'.join(VALID_DATASET_TYPE)
+from ..utils import VALID_DATASET_TYPE, VALID_DATASET_TYPE_STR
 
 class AccurancyMeasurer():
 
-    def __init__(self, dataset_type, is_input_flatten=True):
+    def __init__(self, dataset_type, transform, is_input_flatten=True):
+        # Internal Hyperparamters
+        self.batch_size = 1000
+
+        # User-defined Hyperparamters
+        self.transform = transform
         self.is_input_flatten = is_input_flatten
 
         self.loader = None
@@ -22,7 +25,6 @@ class AccurancyMeasurer():
         self.dataset_type = None
 
         assert type(dataset_type) == str
-
         if dataset_type in VALID_DATASET_TYPE:
             self.dataset_type = dataset_type
         else:
@@ -34,34 +36,17 @@ class AccurancyMeasurer():
 
     def _set_dataset(self):
         if self.dataset_type == 'MNIST':
-            self.dataset = torchvision.datasets.MNIST(root='./data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
-            self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=10000, shuffle=False)
+            self.dataset = torchvision.datasets.MNIST(root='./data', train=False, transform=self.transform, download=True)
+            self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=self.batch_size, shuffle=False)
         elif self.dataset_type == 'CIFAR10':
-            transform = transforms.Compose([
-                 transforms.ToTensor(),
-                 transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-            self.dataset = torchvision.datasets.CIFAR10(root='./data', train=False, transform=transform, download=True)
-            self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=10000, shuffle=False)
+            self.dataset = torchvision.datasets.CIFAR10(root='./data', train=False, transform=self.transform, download=True)
+            self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=self.batch_size, shuffle=False)
         elif self.dataset_type == 'IMAGENET':
-            transform = transforms.Compose([            
-                transforms.Resize(256),                    
-                transforms.CenterCrop(224),                
-                transforms.ToTensor(),                     
-                transforms.Normalize(                      
-                mean=[0.485, 0.456, 0.406],                
-                std=[0.229, 0.224, 0.225])
-            ])
-            '''
-            transform = transforms.Compose([
-                transforms.CenterCrop(224),
-                transforms.ToTensor(),
-                transforms.Normalize([0.5,0.5,0.5], [0.5,0.5,0.5])
-            ])
-            '''
-            self.dataset = torchvision.datasets.ImageNet(root='./data', split='val',transform=transform, download=True)
+            self.dataset = torchvision.datasets.ImageNet(root='./data', split='val',transform=self.transform, download=True)
             self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=1000, shuffle=False)
 
     def measure_accurancy(self, model):
+        model = model.eval()
         assert not (type(self.dataset_type) is None)
         assert self.dataset_type in VALID_DATASET_TYPE
 
