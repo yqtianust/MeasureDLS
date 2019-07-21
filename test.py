@@ -42,33 +42,21 @@ class TestMeasureDLS(unittest.TestCase):
         acc = accurancy_measurer.measure_accurancy(wrapped_model)
         self.assertGreaterEqual(acc, 0.6)
 
-    def test_sample_model_Pytorch_FC_IMAGENET_accurancy(self):
+    def test_pretrained_model_Pytorch_Alexnet_IMAGENET_accurancy(self):
         alexnet = models.alexnet(pretrained=True)
         user_model = alexnet.eval()
-        transform = transforms.Compose([            
-        transforms.Resize(256),                    
-        transforms.CenterCrop(224),                
-        transforms.ToTensor(),                     
-        transforms.Normalize(                      
-        mean=[0.485, 0.456, 0.406],                
-        std=[0.229, 0.224, 0.225]                  
-        )])
         wrapped_model = measureDLS.models.PyTorchModel(user_model, bounds=(0, 1), num_classes=1000)
         accurancy_measurer = measureDLS.measurement.AccurancyMeasurer(dataset_type='IMAGENET', is_input_flatten=False)
         acc = accurancy_measurer.measure_accurancy(wrapped_model)
+        self.assertGreaterEqual(acc, 0.6)
 
-    def test_sample_model_Pytorch_CNN_IMAGENET_accurancy(self):
-        pass 
-    
-    def test_pretrained_model_Pytorch_1_accurancy(self):
-        pass 
-
-    def test_pretrained_model_Pytorch_2_accurancy(self):
-        pass 
-
-    def test_pretrained_model_Pytorch_3_accurancy(self):
-        pass 
-
+    def test_pretrained_model_Pytorch_Resnet18_IMAGENET_accurancy(self):
+        resnet = models.resnet18(pretrained=True)
+        user_model = resnet.eval()
+        wrapped_model = measureDLS.models.PyTorchModel(user_model, bounds=(0, 1), num_classes=1000)
+        accurancy_measurer = measureDLS.measurement.AccurancyMeasurer(dataset_type='IMAGENET', is_input_flatten=False)
+        acc = accurancy_measurer.measure_accurancy(wrapped_model)
+        print(acc) 
 
 if __name__ == '__main__':
     unittest.main()
