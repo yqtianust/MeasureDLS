@@ -8,3 +8,4 @@ from .wrappers import ModelWithEstimatedGradients
 from .wrappers import CompositeModel  
 
 from .pytorch import PyTorchModel
+from .keras import KerasModel
