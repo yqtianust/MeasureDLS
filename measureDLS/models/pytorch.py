@@ -48,7 +48,7 @@ class PyTorchModel(DifferentiableModel):
             self.device = torch.device(device)
         else:
             self.device = device
-        self._model = model.to(self.device)
+        self._model = model.eval().to(self.device)
 
         if model.training:
             warnings.warn(

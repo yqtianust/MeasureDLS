@@ -8,7 +8,7 @@ import numpy as np
 import warnings
 
 from ..models import *
-from ..utils import VALID_DATASET_TYPE, VALID_DATASET_TYPE_STR
+from ..constants import VALID_DATASET_TYPE, VALID_DATASET_TYPE_STR
 
 class AccurancyMeasurer():
 
@@ -46,7 +46,6 @@ class AccurancyMeasurer():
             self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=1000, shuffle=False)
 
     def measure_accurancy(self, model):
-        model = model.eval()
         assert not (type(self.dataset_type) is None)
         assert self.dataset_type in VALID_DATASET_TYPE
 
