@@ -25,7 +25,9 @@ We have prepared unit tests to verify correctness of functionalities for our too
 
 ```
 conda activate measureDLS
-python3 test.py -v
+python3 pytorch_test.py -v
+python3 keras_test.py -v 
+...
 ```
 
 ## Usage 
