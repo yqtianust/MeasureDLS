@@ -51,8 +51,15 @@ class AccurancyMeasurer():
                 mean=[0.485, 0.456, 0.406],                
                 std=[0.229, 0.224, 0.225])
             ])
+            '''
+            transform = transforms.Compose([
+                transforms.CenterCrop(224),
+                transforms.ToTensor(),
+                transforms.Normalize([0.5,0.5,0.5], [0.5,0.5,0.5])
+            ])
+            '''
             self.dataset = torchvision.datasets.ImageNet(root='./data', split='val',transform=transform, download=True)
-            self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=10000, shuffle=False)
+            self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=1000, shuffle=False)
 
     def measure_accurancy(self, model):
         assert not (type(self.dataset_type) is None)
@@ -107,7 +114,6 @@ class AccurancyMeasurer():
                 return accurancy
 
     def _measure_PyTorchModel_IMAGENET_accurancy(self, model):
-        print(self.device)
         with torch.no_grad():
             correct = 0
             total = 0

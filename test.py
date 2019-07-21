@@ -48,15 +48,23 @@ class TestMeasureDLS(unittest.TestCase):
         wrapped_model = measureDLS.models.PyTorchModel(user_model, bounds=(0, 1), num_classes=1000)
         accurancy_measurer = measureDLS.measurement.AccurancyMeasurer(dataset_type='IMAGENET', is_input_flatten=False)
         acc = accurancy_measurer.measure_accurancy(wrapped_model)
-        self.assertGreaterEqual(acc, 0.6)
+        self.assertGreaterEqual(acc, 0.75)
 
-    def test_pretrained_model_Pytorch_Resnet18_IMAGENET_accurancy(self):
-        resnet = models.resnet18(pretrained=True)
+    def test_pretrained_model_Pytorch_Vgg11_IMAGENET_accurancy(self):
+        vgg = models.vgg11(pretrained=True)
+        user_model = vgg.eval()
+        wrapped_model = measureDLS.models.PyTorchModel(user_model, bounds=(0, 1), num_classes=1000)
+        accurancy_measurer = measureDLS.measurement.AccurancyMeasurer(dataset_type='IMAGENET', is_input_flatten=False)
+        acc = accurancy_measurer.measure_accurancy(wrapped_model)
+        self.assertGreaterEqual(acc, 0.85)
+
+    def test_pretrained_model_Pytorch_Resnet_IMAGENET_accurancy(self):
+        resnet = models.resnet34(pretrained=True)
         user_model = resnet.eval()
         wrapped_model = measureDLS.models.PyTorchModel(user_model, bounds=(0, 1), num_classes=1000)
         accurancy_measurer = measureDLS.measurement.AccurancyMeasurer(dataset_type='IMAGENET', is_input_flatten=False)
         acc = accurancy_measurer.measure_accurancy(wrapped_model)
-        print(acc) 
+        self.assertGreaterEqual(acc, 0.88) 
 
 if __name__ == '__main__':
     unittest.main()
