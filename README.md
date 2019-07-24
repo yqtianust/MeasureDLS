@@ -1,6 +1,6 @@
-# Project Title
+# MeasureDLS
 
-One Paragraph of project description goes here
+This tools aims to faciliate analyses on various metrices.
 
 ## Getting Started
 
