@@ -86,11 +86,11 @@ class AccurancyMeasurer():
 
             for _, (inputs, labels) in enumerate(self.loader):
                 if self.is_input_flatten:
-                    inputs = inputs.reshape(-1, 784).to(self.device).numpy()
+                    inputs = inputs.reshape(-1, 784).to(self.device).cpu().numpy()
                 else:
-                    inputs = inputs.reshape(-1, 1, 28, 28).to(self.device).numpy()
+                    inputs = inputs.reshape(-1, 1, 28, 28).to(self.device).cpu().numpy()
 
-                labels = labels.to(self.device).numpy()
+                labels = labels.to(self.device).cpu().numpy()
                 predictions = np.argmax(model.forward(inputs), axis=1)
 
                 total += labels.shape[0]
@@ -105,11 +105,11 @@ class AccurancyMeasurer():
             total = 0
             for _, (inputs, labels) in enumerate(self.loader):
                 if self.is_input_flatten:
-                    inputs = inputs.reshape(-1, 3*32*32).to(self.device).numpy()
+                    inputs = inputs.reshape(-1, 3*32*32).to(self.device).cpu().numpy()
                 else:
-                    inputs = inputs.to(self.device).numpy()
+                    inputs = inputs.to(self.device).cpu().numpy()
 
-                labels = labels.to(self.device).numpy()
+                labels = labels.to(self.device).cpu().numpy()
                 predictions = np.argmax(model.forward(inputs), axis=1)
                 total += labels.shape[0]
                 correct += (predictions == labels).sum().item()
@@ -123,11 +123,11 @@ class AccurancyMeasurer():
             total = 0
             for _, (inputs, labels) in enumerate(self.loader):
                 if self.is_input_flatten:
-                    inputs = inputs.reshpae(-1, 3*224*224).to(self.device).numpy()
+                    inputs = inputs.reshpae(-1, 3*224*224).to(self.device).cpu().numpy()
                 else:
-                    inputs = inputs.to(self.device).numpy()
+                    inputs = inputs.to(self.device).cpu().numpy()
 
-                labels = labels.to(self.device).numpy()
+                labels = labels.to(self.device).cpu().numpy()
                 predictions = np.argmax(model.forward(inputs), axis=1)
                 total += labels.shape[0]
 
