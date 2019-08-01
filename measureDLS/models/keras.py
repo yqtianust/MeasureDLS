@@ -3,10 +3,9 @@ from __future__ import absolute_import
 import numpy as np
 import logging
 
-from .base import DifferentiableModel
+from .base import Model
 
-
-class KerasModel(DifferentiableModel):
+class KerasModel(Model):
     """Creates a :class:`Model` instance from a `Keras` model.
     Parameters
     ----------

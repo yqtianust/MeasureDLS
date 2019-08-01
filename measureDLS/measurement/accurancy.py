@@ -62,85 +62,43 @@ class AccurancyMeasurer():
 
         if type(model) == PyTorchModel:
             self._set_Pytorch_dataset()
-            if self.dataset_type == 'MNIST':
-                return self._measure_PyTorchModel_MNIST_accurancy(model)
-            elif self.dataset_type == 'CIFAR10':
-                return self._measure_PyTorchModel_CIFAR10_accurancy(model)
-            elif self.dataset_type == 'IMAGENET':
-                return self._measure_PyTorchModel_IMAGENET_accurancy(model)
+            return self._measure_PyTorchModel_accurancy(self.dataset_type, model)
         elif type(model) == KerasModel:
             self._set_Keras_dataset()
-            if self.dataset_type == 'MNIST':
-                return self._measure_KerasModel_MNIST_accurancy(model)
-            elif self.dataset_type == 'CIFAR10':
-                return self._measure_KerasModel_CIFAR10_accurancy(model)
-            elif self.dataset_type == 'IMAGENET':
-                return self._measure_KerasModel_IMAGENET_accurancy(model)
+            return self._measure_KerasModel_accurancy(self.dataset_type, model)
         else:
             pass
 
-    def _measure_PyTorchModel_MNIST_accurancy(self, model):
+    def _measure_PyTorchModel_accurancy(self, dataset_type, model):
         with torch.no_grad():
             correct = 0
             total = 0
 
             for _, (inputs, labels) in enumerate(self.loader):
                 if self.is_input_flatten:
-                    inputs = inputs.reshape(-1, 784).to(self.device).cpu().numpy()
+                    if dataset_type == 'MNIST':
+                        inputs = inputs.reshape(-1, 784).to(self.device).cpu().numpy()
+                    elif dataset_type == 'CIFAR10':
+                        inputs = inputs.reshape(-1, 3*32*32).to(self.device).cpu().numpy()
+                    elif dataset_type == 'IMAGENET':
+                        inputs = inputs.reshape(-1, 3*224*224).to(self.device).cpu().numpy()
                 else:
-                    inputs = inputs.reshape(-1, 1, 28, 28).to(self.device).cpu().numpy()
+                    if dataset_type == 'MNIST':
+                        inputs = inputs.reshape(-1, 1, 28, 28).to(self.device).cpu().numpy()
+                    elif dataset_type == 'CIFAR10':
+                        inputs = inputs.to(self.device).cpu().numpy()
+                    elif dataset_type == 'IMAGENET':
+                        inputs = inputs.to(self.device).cpu().numpy()
 
                 labels = labels.to(self.device).cpu().numpy()
                 predictions = np.argmax(model.forward(inputs), axis=1)
 
-                total += labels.shape[0]
-                correct += (predictions == labels).sum().item()
-                accurancy = (correct/total)
-
-                return accurancy
-
-    def _measure_PyTorchModel_CIFAR10_accurancy(self, model):
-        with torch.no_grad():
-            correct = 0
-            total = 0
-            for _, (inputs, labels) in enumerate(self.loader):
-                if self.is_input_flatten:
-                    inputs = inputs.reshape(-1, 3*32*32).to(self.device).cpu().numpy()
-                else:
-                    inputs = inputs.to(self.device).cpu().numpy()
-
-                labels = labels.to(self.device).cpu().numpy()
-                predictions = np.argmax(model.forward(inputs), axis=1)
                 total += labels.shape[0]
                 correct += (predictions == labels).sum().item()
                 accurancy = (correct/total)
                 
                 return accurancy
 
-    def _measure_PyTorchModel_IMAGENET_accurancy(self, model):
-        with torch.no_grad():
-            correct = 0
-            total = 0
-            for _, (inputs, labels) in enumerate(self.loader):
-                if self.is_input_flatten:
-                    inputs = inputs.reshpae(-1, 3*224*224).to(self.device).cpu().numpy()
-                else:
-                    inputs = inputs.to(self.device).cpu().numpy()
 
-                labels = labels.to(self.device).cpu().numpy()
-                predictions = np.argmax(model.forward(inputs), axis=1)
-                total += labels.shape[0]
-
-                correct += (predictions == labels).sum().item()
-                accurancy = (correct/total)
-
-                return accurancy
-
-    def _measure_KerasModel_MNIST_accurancy(self, model):
-        pass 
-
-    def _measure_KerasModel_CIFAR10_accurancy(self, model):
-        pass 
-
-    def _measure_KerasModel_IMAGENET_accurancy(self, model):
+    def _measure_KerasModel_accurancy(self, dataset_type, model):
         pass 

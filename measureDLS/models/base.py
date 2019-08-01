@@ -93,21 +93,3 @@ class Model(ABC):
         raise NotImplementedError
 
 
-class DifferentiableModel(Model):
-
-    @abstractmethod
-    def gradient(self, inputs, labels):
-        raise NotImplementedError
-
-    def gradient_one(self, x, label):
-        return np.squeeze(self.gradient(x[np.newaxis], np.asarray(label)[np.newaxis]), axis=0)
-
-    @abstractmethod
-    def backward(self, gradient, inputs):
-        raise NotImplementedError
-
-    def backward_one(self, gradient, x):
-        return np.squeeze(self.backward(gradient[np.newaxis], x[np.newaxis]), axis=0)
-
-    def forward_and_gradient_one(self, x, label):
-        return self.forward_one(x), self.gradient_one(x, label)  # pragma: no cover
