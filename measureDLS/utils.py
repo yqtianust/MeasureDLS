@@ -6,10 +6,10 @@ import torchvision
 import torchvision.transforms as transforms
 import numpy as np
 
-PATH_SAMPLE_PYTORCH_FC_MNIST = 'sample_model_PYTORCH_FC_MNIST.pt'
-PATH_SAMPLE_PYTORCH_CNN_MNIST = 'sample_model_PYTORCH_CNN_MNIST.pt'
-PATH_SAMPLE_PYTORCH_FC_CIFAR10 = 'sample_model_PYTORCH_FC_CIFAR10.pt'
-PATH_SAMPLE_PYTORCH_CNN_CIFAR10 = 'sample_model_PYTORCH_CNN_CIFAR10.pt'
+PATH_SAMPLE_PYTORCH_FC_MNIST = 'tests/sample_model_PYTORCH_FC_MNIST.pt'
+PATH_SAMPLE_PYTORCH_CNN_MNIST = 'tests/sample_model_PYTORCH_CNN_MNIST.pt'
+PATH_SAMPLE_PYTORCH_FC_CIFAR10 = 'tests/sample_model_PYTORCH_FC_CIFAR10.pt'
+PATH_SAMPLE_PYTORCH_CNN_CIFAR10 = 'tests/sample_model_PYTORCH_CNN_CIFAR10.pt'
 
 
 class PytorchFC_MINST(nn.Module):

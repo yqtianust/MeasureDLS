@@ -1,10 +1,11 @@
 import warnings
 import unittest
 
-import measureDLS
 import torch 
 from torchvision import models
 from torchvision import transforms
+
+import measureDLS
 
 MNIST_TRANSFORM = transforms.ToTensor()
 CIFAR10_TRANSFORM = transforms.Compose([
