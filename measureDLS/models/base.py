@@ -48,38 +48,14 @@ def _create_preprocessing_fn(params):
 
 class Model(ABC):
 
-    def __init__(self, channel_axis, preprocessing=(0, 1)):
-        self._channel_axis = channel_axis
-
-        if not callable(preprocessing):
-            preprocessing = _create_preprocessing_fn(preprocessing)
-        assert callable(preprocessing)
-        self._preprocessing = preprocessing
+    def __init__(self):
+        pass 
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         return None
-
-    def channel_axis(self):
-        return self._channel_axis
-
-    def _process_input(self, x):
-        p, grad = self._preprocessing(x)
-        if hasattr(p, 'dtype'):
-            assert p.dtype == x.dtype
-        p = np.asarray(p, dtype=x.dtype)
-        assert callable(grad)
-        return p, grad
-
-    def _process_gradient(self, backward, dmdp):
-        if backward is None:
-            raise ValueError('Your preprocessing function does not provide an (approximate) gradient')
-        
-        dmdx = backward(dmdp)
-        assert dmdx.dtype == dmdp.dtype
-        return dmdx
 
     @abstractmethod
     def forward(self, inputs):

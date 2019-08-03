@@ -30,14 +30,12 @@ class PyTorchModel(Model):
             self,
             model,
             num_classes,
-            channel_axis=1,
-            device=None,
-            preprocessing=(0, 1)):
+            device=None):
 
         # lazy import
         import torch
 
-        super(PyTorchModel, self).__init__(channel_axis=channel_axis, preprocessing=preprocessing)
+        super(PyTorchModel, self).__init__()
 
         self._num_classes = num_classes
 
