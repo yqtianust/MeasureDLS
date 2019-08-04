@@ -69,6 +69,9 @@ class PyTorchModel(Model):
         assert predictions.shape == (n, self.num_classes())
         return predictions
 
+    def evaluate(self, test_dataset):
+        pass 
+
     def num_classes(self):
         return self._num_classes
 

@@ -61,11 +61,10 @@ class Model(ABC):
     def forward(self, inputs):
         raise NotImplementedError
 
-    def forward_one(self, x):
-        return np.squeeze(self.forward(x[np.newaxis]), axis=0)
-
     @abstractmethod
     def num_classes(self):
         raise NotImplementedError
-
-
+    
+    @abstractmethod 
+    def evaluate(self, test_dataset):
+        raise NotImplementedError
