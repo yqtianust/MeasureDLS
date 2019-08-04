@@ -13,15 +13,18 @@ import warnings
 from ..models import *
 from ..constants import VALID_DATASET_TYPE, VALID_DATASET_TYPE_STR
 
+from ..dataset_prepare import load_imagenet_val_dataset 
+
 class AccurancyMeasurer():
 
-    def __init__(self, dataset_type, transform=None, is_input_flatten=True):
+    def __init__(self, dataset_type, transform=None, is_input_flatten=True, preprocess=None):
         # Internal Hyperparamters
         self.batch_size = 1000
 
         # User-defined Hyperparamters
         self.transform = transform
         self.is_input_flatten = is_input_flatten
+        self.preprocess = preprocess
 
         self.loader = None
         self.dataset = None
@@ -54,7 +57,7 @@ class AccurancyMeasurer():
         elif self.dataset_type == 'CIFAR10':
             pass 
         elif self.dataset_type == 'IMAGENET':
-            pass 
+            self.dataset = load_imagenet_val_dataset(1000)
 
     def measure_accurancy(self, model):
         assert not (type(self.dataset_type) is None)
@@ -101,4 +104,11 @@ class AccurancyMeasurer():
 
 
     def _measure_KerasModel_accurancy(self, dataset_type, model):
-        pass 
+        datas, labels = self.dataset
+        datas = self.preprocess(datas)
+        self.dataset = (datas, labels)
+        acc = model.evaluate(self.dataset)
+        return acc 
+
+
+
