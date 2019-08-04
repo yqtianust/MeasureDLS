@@ -105,7 +105,8 @@ class AccurancyMeasurer():
 
     def _measure_KerasModel_accurancy(self, dataset_type, model):
         datas, labels = self.dataset
-        datas = self.preprocess(datas)
+        if not (self.preprocess is None):
+            datas = self.preprocess(datas)
         self.dataset = (datas, labels)
         acc = model.evaluate(self.dataset)
         return acc 
