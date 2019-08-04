@@ -1,6 +1,5 @@
 import sys, os, time
 import numpy as np
-import matplotlib.pyplot as plt
 import scipy.io
 import cv2
 
@@ -90,6 +89,13 @@ def x_val_load():
 def y_val_load():
     return np.load('data/y_val.npy')
 
-x_val, y_val = x_val_load(), y_val_load()
-print(type(x_val), type(y_val))
-print(x_val.shape, y_val.shape)
+def prepare_imagenet_val_dataset():
+    x_val_prepare()
+    y_val_prepare()
+
+def load_imagenet_val_dataset(num_of_test_samples):
+    x_val, y_val = x_val_load(), y_val_load()
+    return(x_val[:num_of_test_samples], y_val[:num_of_test_samples])
+
+
+
