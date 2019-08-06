@@ -37,11 +37,12 @@ In Usage section, we will cover description for parameters and some examples for
 ### Parameters 
 
 -  <b>measureDLS.measurement.AccurancyMeasurer</b>  
-   Input: dataset_type, transform, is_input_flatten (optinal)
+   Input: dataset_type, transform(optinal), is_input_flatten(optinal), preprocess(optional)
           
           dataset_type: 'MNIST', 'CIFAR10', or 'IMAGENET'
-          transform: please input the transform used your training process 
+          transform: please input the transform used before forwarding (currently for PyTorch) 
           is_input_flatten: True or False. (If True, input will be collapsed into 2 dimensions. For instance, (1000, 3, 28, 28) -> (1000, 3*28*28))
+          preprocess: please specify the preprocess used before forwarding (currently for Keras)
 
 ### Examples 
 
@@ -56,3 +57,23 @@ accurancy_measurer = measureDLS.measurement.AccurancyMeasurer('IMAGENET', transf
 acc = accurancy_measurer.measure_accurancy(wrapped_model)
 ```
 
+Use pretrained model (e.g., vgg16) in Keras and measure its accurany with ImageNet dataset
+``` python 
+from keras.applications.vgg16 import VGG16
+from keras.applications.vgg16 import preprocess_input
+        
+user_model = VGG16(weights='imagenet', include_top=True)
+wrapped_model = measureDLS.models.KerasModel(user_model, num_classes=1000)
+accurancy_measurer = measureDLS.measurement.AccurancyMeasurer('IMAGENET', is_input_flatten=False, preprocess=preprocess_input)
+acc = accurancy_measurer.measure_accurancy(wrapped_model)
+```
+
+Use pretrained model (e.g., mobilenet) in tensorflow and measure its accurancy with ImageNet dataset
+``` python 
+pending
+```
+
+## Acknowledgments
+
+* This repository utilizes (calls) following tools during execution: foolbox (https://github.com/bethgelab/foolbox), ...
+* More 
