@@ -12,7 +12,7 @@ import numpy as np
 # vgg_16, vgg_19 and resnet all accept 224x224 input images
 # inception_v3 and Xception require 299*299 pixel inputs 
 
-class TestMeasureDLS(unittest.TestCase):
+class TestKeras(unittest.TestCase):
 
     def setUp(self):
         warnings.simplefilter('ignore')

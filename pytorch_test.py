@@ -21,7 +21,7 @@ IMAGENET_TRANSFORM = transforms.Compose([
         std=[0.229, 0.224, 0.225])
 ])
 
-class TestMeasureDLS(unittest.TestCase):
+class TestPyTorch(unittest.TestCase):
 
     def setUp(self):
         warnings.simplefilter('ignore', category=ImportWarning)
