@@ -47,7 +47,9 @@ class AccurancyMeasurer():
             self.dataset = torchvision.datasets.CIFAR10(root='./data', train=False, transform=self.transform, download=True)
             self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=self.batch_size, shuffle=False)
         elif self.dataset_type == 'IMAGENET':
-            self.dataset = torchvision.datasets.ImageNet(root='./data', split='val',transform=self.transform, download=True)
+            # For Pytorch IMAGENET dataset preparation, it should be the same as other frameworks (e.g., Keras)
+            # -> Change implementation (pending)
+            self.dataset = torchvision.datasets.ImageNet(root='./data', split='val',transform=self.transform, download=False)
             self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=1000, shuffle=False)
 
     def _set_Keras_dataset(self):

@@ -58,7 +58,7 @@ class PyTorchModel(Model):
         # lazy import
         import torch
 
-        inputs, _ = self._process_input(inputs)
+        # inputs, _ = self._process_input(inputs)
         n = len(inputs)
         inputs = torch.from_numpy(inputs).to(self.device)
 
