@@ -10,13 +10,19 @@ These instructions will get you a copy of the project up and running on your loc
 
 Please ensure you have anaconda installed in your Linux machine. 
 
-### Installing
+### Installing virtual environments 
 
 A step by step series of examples that tell you how to get a development env running
 
 ```
 cd envs 
 source ./setup.sh
+```
+
+### Preparing dataset (for measuring accurancy)
+
+```
+pending
 ```
 
 ## Running the tests
