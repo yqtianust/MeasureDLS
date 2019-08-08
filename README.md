@@ -21,8 +21,14 @@ source ./setup.sh
 
 ### Preparing dataset (for measuring accurancy)
 
+For preparing imagenet validation dataset, please download ILSVRC2012_img_val.tar from its official website and unzip those images in _data/img_val_. 
+
+Several files (e.g., meta.mat or sysnet_words.txt) responsible for labeling are placed in _data/img_val_labels_. 
+
+After moving unzipped images to _data/img_val_. 
+
 ```
-pending
+python3 process_imagenet_val_and_store_as_npy.py
 ```
 
 ## Running the tests
