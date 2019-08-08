@@ -53,7 +53,7 @@ def x_val_prepare():
 
 def y_val_prepare():
     # data/img_val_labels/ILSVRC2012_devkit_t12/data
-    meta = scipy.io.loadmat("data/img_val_labels/ILSVRC2012_devkit_t12/data/meta.mat")
+    meta = scipy.io.loadmat("data/img_val_labels/meta.mat")
     original_idx_to_synset = {}
     synset_to_name = {}
 
@@ -66,7 +66,7 @@ def y_val_prepare():
 
     synset_to_keras_idx = {}
     keras_idx_to_name = {}
-    f = open("data/img_val_labels/ILSVRC2012_devkit_t12/data/synset_words.txt","r")
+    f = open("data/img_val_labels/synset_words.txt","r")
     idx = 0
     for line in f:
         parts = line.split(" ")
@@ -75,7 +75,7 @@ def y_val_prepare():
         idx += 1
     f.close()
 
-    f = open("data/img_val_labels/ILSVRC2012_devkit_t12/data/ILSVRC2012_validation_ground_truth.txt","r")
+    f = open("data/img_val_labels/ILSVRC2012_validation_ground_truth.txt","r")
     y_val = f.read().strip().split("\n")
     y_val = list(map(int, y_val))
     y_val = np.array([synset_to_keras_idx[original_idx_to_synset[idx]] for idx in y_val])
