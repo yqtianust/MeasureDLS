@@ -17,8 +17,8 @@ def x_val_prepare():
     
     fns = os.listdir("data/img_val")
     fns.sort()
-    fns = ["data/img_val/" + fn for fn in fns]
-
+    # fns = ["data/img_val/" + fn for fn in fns]
+    fns = ["data/img_val/" + fn for fn in fns if '.JPEG' in fn]
 
     x_val = np.zeros((len(fns), 224, 224, 3), dtype=np.float32)
     print(humansize(x_val.nbytes))
