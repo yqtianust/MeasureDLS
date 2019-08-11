@@ -55,9 +55,17 @@ class AccurancyMeasurer():
     def _set_Keras_dataset(self):
         if self.dataset_type == 'MNIST':
             _, self.dataset = mnist.load_data()
-            print(self.dataset)
         elif self.dataset_type == 'CIFAR10':
             pass 
+        elif self.dataset_type == 'IMAGENET':
+            self.dataset = load_imagenet_val_dataset(1000)
+
+    def _set_TensorFlow_dataset(self):
+        if self.dataset_type == 'MNIST':
+            _, self.dataset = mnist.load_data()
+            print(self.dataset)
+        elif self.dataset_type == 'CIFAR10':
+            pass
         elif self.dataset_type == 'IMAGENET':
             self.dataset = load_imagenet_val_dataset(1000)
 
@@ -71,6 +79,9 @@ class AccurancyMeasurer():
         elif type(model) == KerasModel:
             self._set_Keras_dataset()
             return self._measure_KerasModel_accurancy(self.dataset_type, model)
+        elif type(model) == TensorFlowModel:
+            self._set_TensorFlow_dataset()
+            return self._measure_TensorFlowModel_accurancy(self.dataset_type, model)
         else:
             pass
 
@@ -113,5 +124,11 @@ class AccurancyMeasurer():
         acc = model.evaluate(self.dataset)
         return acc 
 
-
+    def _measure_TensorFlowModel_accurancy(self, dataset_type, model):
+        datas, labels = self.dataset
+        if not (self.preprocess is None):
+            datas = self.preprocess(datas)
+        self.dataset = (datas, labels)
+        acc = model.evaluate(self.dataset)
+        return acc
 

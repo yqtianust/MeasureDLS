@@ -4,3 +4,4 @@ from .wrappers import ModelWrapper
 
 from .pytorch import PyTorchModel
 from .keras import KerasModel
+from .tensorflow import TensorFlowModel
