@@ -4,7 +4,9 @@ import scipy.io
 import cv2
 
 def humansize(nbytes):
-    '''From https://stackoverflow.com/questions/14996453/python-libraries-to-calculate-human-readable-filesize-from-bytes'''
+    """
+    Returns size which is easily understandable by human beings. 
+    """
     suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
     i = 0
     while nbytes >= 1024 and i < len(suffixes)-1:
@@ -14,11 +16,14 @@ def humansize(nbytes):
     return '%s %s' % (f, suffixes[i])
 
 def x_val_prepare():
-    
+    """
+    Parse images stored in particular folder & restore in a single npy file for future re-usage.
+
+    Please unzip and place your images in the relative path 'data/img_val'
+    """
     fns = os.listdir("data/img_val")
     fns.sort()
-    # fns = ["data/img_val/" + fn for fn in fns]
-    fns = ["data/img_val/" + fn for fn in fns if '.JPEG' in fn]
+    fns = ["data/img_val/" + fn for fn in fns if '.JPEG' in fn] # Filter out files without '.JPEG' 
 
     x_val = np.zeros((len(fns), 224, 224, 3), dtype=np.float32)
     print(humansize(x_val.nbytes))
@@ -52,7 +57,15 @@ def x_val_prepare():
     print('finish extraction')
 
 def y_val_prepare():
-    # data/img_val_labels/ILSVRC2012_devkit_t12/data
+    """
+    Obtain corresponding labels with the assistance of three files stated below & restore them in a single npy file for future re-usage.
+    
+    1. meta.mat
+    2. sysnet_words.txt
+    3. ILSVRC2012_validation_ground_truth.txt 
+
+    Please place all files in the relative path 'data/img_val_labels'
+    """
     meta = scipy.io.loadmat("data/img_val_labels/meta.mat")
     original_idx_to_synset = {}
     synset_to_name = {}
@@ -84,9 +97,15 @@ def y_val_prepare():
     np.save("data/y_val.npy", y_val)
 
 def x_val_load():
+    """
+    Load data we have parsed beforehand 
+    """
     return np.load('data/x_val.npy')
 
 def y_val_load():
+    """
+    Load labels we have extracted beforehand
+    """
     return np.load('data/y_val.npy')
 
 def prepare_imagenet_val_dataset():
@@ -94,6 +113,9 @@ def prepare_imagenet_val_dataset():
     y_val_prepare()
 
 def load_imagenet_val_dataset(num_of_test_samples):
+    """
+    Load dataset (X, Y) with the size of given amount
+    """
     x_val, y_val = x_val_load(), y_val_load()
     return(x_val[:num_of_test_samples], y_val[:num_of_test_samples])
 

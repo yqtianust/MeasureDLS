@@ -18,6 +18,12 @@ from ..dataset_prepare import load_imagenet_val_dataset
 class AccurancyMeasurer():
 
     def __init__(self, dataset_type, transform=None, is_input_flatten=True, preprocess=None):
+        """
+        Three tasks are accomplished at the initialization of an AccurancyMeasurer instance:
+        1. Check whether dataset_type given from instatitation is valid (has been implemented)
+        2. Initialize several interal parameters 
+        3. Check if GPU avaiable
+        """
         # Internal Hyperparamters
         self.batch_size = 1000
 
@@ -40,6 +46,11 @@ class AccurancyMeasurer():
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     def _set_Pytorch_dataset(self):
+        """
+        Check whether the required dataset is appropriately downloaded. 
+
+        If NOT, we will automatically download required dataset (for dataset of small-scale) or give proper instructions (for dataset of huge-scale like ImageNet). 
+        """
         if self.dataset_type == 'MNIST':
             self.dataset = torchvision.datasets.MNIST(root='./data', train=False, transform=self.transform, download=True)
             self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=self.batch_size, shuffle=False)
@@ -47,12 +58,16 @@ class AccurancyMeasurer():
             self.dataset = torchvision.datasets.CIFAR10(root='./data', train=False, transform=self.transform, download=True)
             self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=self.batch_size, shuffle=False)
         elif self.dataset_type == 'IMAGENET':
-            # For Pytorch IMAGENET dataset preparation, it should be the same as other frameworks (e.g., Keras)
-            # -> Change implementation (pending)
-            self.dataset = torchvision.datasets.ImageNet(root='./data', split='val',transform=self.transform, download=False)
-            self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=1000, shuffle=False)
+            # Check the existence of 'x.npy' and 'y.npy' 
+            # Pending for implementation 
+            pass 
 
     def _set_Keras_dataset(self):
+        """
+        Check whether the required dataset is appropriately downloaded. 
+
+        If NOT, we adopt the similar strategy as mentioned in _set_Pytorch_dataset function. 
+        """
         if self.dataset_type == 'MNIST':
             _, self.dataset = mnist.load_data()
         elif self.dataset_type == 'CIFAR10':
@@ -61,6 +76,11 @@ class AccurancyMeasurer():
             self.dataset = load_imagenet_val_dataset(1000)
 
     def _set_TensorFlow_dataset(self):
+         """
+        Check whether the required dataset is appropriately downloaded.
+
+        If NOT, we adopt the similar strategy as mentioned in _set_Pytorch_dataset function.
+        """
         if self.dataset_type == 'MNIST':
             _, self.dataset = mnist.load_data()
             print(self.dataset)
