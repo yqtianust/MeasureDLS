@@ -30,7 +30,7 @@ class TestKeras(unittest.TestCase):
         wrapped_model = measureDLS.models.KerasModel(user_model, num_classes=1000)
         accurancy_measurer = measureDLS.measurement.AccurancyMeasurer('IMAGENET', is_input_flatten=False, preprocess=preprocess_input)
         acc = accurancy_measurer.measure_accurancy(wrapped_model)
-        self.assertGreaterEqual(acc, 0.713 - 0.05) # 0.707
+        self.assertGreaterEqual(acc, 0.713 * 0.9) 
 
     def test_pretrained_model_Keras_ResNet50_IMAGENET_accurancy(self):
         from keras.applications.resnet50 import ResNet50
@@ -40,7 +40,7 @@ class TestKeras(unittest.TestCase):
         wrapped_model = measureDLS.models.KerasModel(user_model, num_classes=1000)
         accurancy_measurer = measureDLS.measurement.AccurancyMeasurer('IMAGENET', is_input_flatten=False, preprocess=preprocess_input)
         acc = accurancy_measurer.measure_accurancy(wrapped_model)
-        self.assertGreaterEqual(acc, 0.749 - 0.05) # 0.756
+        self.assertGreaterEqual(acc, 0.749 * 0.9) 
 
     def test_pretrained_model_Keras_MobileNet_IMAGENET_accurancy(self):
         from keras.applications.mobilenet import MobileNet 
@@ -50,7 +50,7 @@ class TestKeras(unittest.TestCase):
         wrapped_model = measureDLS.models.KerasModel(user_model, num_classes=1000)
         accurancy_measurer = measureDLS.measurement.AccurancyMeasurer('IMAGENET', is_input_flatten=False, preprocess=preprocess_input)
         acc = accurancy_measurer.measure_accurancy(wrapped_model)
-        self.assertGreaterEqual(acc, 0.704 - 0.05) # 0.709
+        self.assertGreaterEqual(acc, 0.704 * 0.9)
 
 if __name__ == '__main__':
     unittest.main()
