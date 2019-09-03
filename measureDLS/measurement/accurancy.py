@@ -58,8 +58,33 @@ class AccurancyMeasurer():
             self.dataset = torchvision.datasets.CIFAR10(root='./data', train=False, transform=self.transform, download=True)
             self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=self.batch_size, shuffle=False)
         elif self.dataset_type == 'IMAGENET':
+            # self.dataset = torchvision.datasets.ImageNet(root='./data', split='val',transform=self.transform, download=False)
+            # self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=1000, shuffle=False)
+            
             # Check the existence of 'x.npy' and 'y.npy' 
-            # Pending for implementation 
+            # (Pending for implementation)
+
+            # If exist, then load some data
+            num_of_samples = 1000
+            x, y = load_imagenet_val_dataset(num_of_samples)
+            x = np.transpose(x, (0, 3, 1, 2))
+
+            import torchvision.transforms as transforms # lazy import 
+            IMAGENET_TRANSFORM = transforms.Compose([
+                transforms.Normalize(
+                    mean=[0.485, 0.456, 0.406],
+                    std=[0.229, 0.224, 0.225])
+            ])
+
+            tensor_x = torch.from_numpy(x)
+            tensor_x = IMAGENET_TRANSFORM(tensor_x)
+            
+            tensor_y = torch.from_numpy(y)
+            self.dataset = torch.utils.data.TensorDataset(tensor_x,tensor_y) # create your datset
+            self.loader = torch.utils.data.DataLoader(self.dataset, batch_size=num_of_samples) # create your dataloader
+            
+            # Otherwise, give some warning messages 
+            # (Pending for implementation) 
             pass 
 
     def _set_Keras_dataset(self):
@@ -76,7 +101,7 @@ class AccurancyMeasurer():
             self.dataset = load_imagenet_val_dataset(1000)
 
     def _set_TensorFlow_dataset(self):
-         """
+        """
         Check whether the required dataset is appropriately downloaded.
 
         If NOT, we adopt the similar strategy as mentioned in _set_Pytorch_dataset function.
@@ -126,6 +151,7 @@ class AccurancyMeasurer():
                     elif dataset_type == 'IMAGENET':
                         inputs = inputs.to(self.device).cpu().numpy()
 
+                print(inputs.shape, labels.shape)
                 labels = labels.to(self.device).cpu().numpy()
                 predictions = np.argmax(model.forward(inputs), axis=1)
 

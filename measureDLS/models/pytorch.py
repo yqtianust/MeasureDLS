@@ -61,7 +61,7 @@ class PyTorchModel(Model):
         # inputs, _ = self._process_input(inputs)
         n = len(inputs)
         inputs = torch.from_numpy(inputs).to(self.device)
-
+        
         predictions = self._model(inputs)
         predictions = predictions.detach().cpu().numpy()
 
