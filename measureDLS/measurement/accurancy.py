@@ -58,13 +58,20 @@ class AccurancyMeasurer():
             self.dataset = torchvision.datasets.CIFAR10(root='./data', train=False, transform=self.transform, download=True)
             self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=self.batch_size, shuffle=False)
         elif self.dataset_type == 'IMAGENET':
-            # self.dataset = torchvision.datasets.ImageNet(root='./data', split='val',transform=self.transform, download=False)
+            # self.dataset = torchvision.datasets.ImageNet(root='./data', split='val',transform=self.transform, download=True)
             # self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=1000, shuffle=False)
             
-            # Check the existence of 'x.npy' and 'y.npy' 
-            # (Pending for implementation)
+            # Check the existence of 'x_val.npy' and 'y_val.npy' 
+            # If required files are not found, raise FileNotFoundError 
+            import os, errno # lazy import 
+            file_path = 'data/x_val.npy'
+            if not os.path.exists(file_path):
+                raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), file_path)
+            file_path = 'data/y_val.npy'
+            if not os.path.exists(file_path):
+                raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), file_path)
 
-            # If exist, then load some data
+            # Otherwise, load some data
             num_of_samples = 1000
             x, y = load_imagenet_val_dataset(num_of_samples)
             x = np.transpose(x, (0, 3, 1, 2))
@@ -82,10 +89,6 @@ class AccurancyMeasurer():
             tensor_y = torch.from_numpy(y)
             self.dataset = torch.utils.data.TensorDataset(tensor_x,tensor_y) # create your datset
             self.loader = torch.utils.data.DataLoader(self.dataset, batch_size=num_of_samples) # create your dataloader
-            
-            # Otherwise, give some warning messages 
-            # (Pending for implementation) 
-            pass 
 
     def _set_Keras_dataset(self):
         """

@@ -21,9 +21,10 @@ def x_val_prepare():
 
     Please unzip and place your images in the relative path 'data/img_val'
     """
-    fns = os.listdir("data/img_val")
+    path = 'temp_extract'
+    fns = os.listdir(path)
     fns.sort()
-    fns = ["data/img_val/" + fn for fn in fns if '.JPEG' in fn] # Filter out files without '.JPEG' 
+    fns = [path + "/" + fn for fn in fns if '.JPEG' in fn] # Filter out files without '.JPEG' 
 
     x_val = np.zeros((len(fns), 224, 224, 3), dtype=np.float32)
     print(humansize(x_val.nbytes))
