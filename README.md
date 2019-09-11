@@ -85,7 +85,9 @@ Use pretrained model (e.g., mobilenet) in tensorflow and measure its accurancy w
 pending
 ```
 
-### Details of implementation 
+## Details of implementation 
+
+### Something you need to pay attention
 
 Please pay attention to the points described below during your implementation. 
 
@@ -96,6 +98,10 @@ Please pay attention to the points described below during your implementation.
 - Pay great attention to the preprocessing procedure for every pre-trained model released. It is somehow tedious work, but it matters to obtain the correct results of the analysis. 
 
 Due to the stochastic nature of machine learning program, it may be ambiguous for us to recognize some implementation errors. However, low accuracy should be a practical indication that there is something implemented inappropriately in our tool. Do make sure our tool functions normally by conducting unit tests periodically. 
+
+### Current challenges and progress 
+
+More description
 
 ## Acknowledgments
 
