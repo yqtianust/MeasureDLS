@@ -1,6 +1,6 @@
 # MeasureDLS
 
-This tools aims to faciliate analyses on various metrices.
+This tools aims to faciliate analyses on various metrices (e.g., correctness and robustness) accross various machine learning frameworks (e.g., PyTorch and Keras).
 
 ## Getting Started
 
@@ -85,7 +85,19 @@ Use pretrained model (e.g., mobilenet) in tensorflow and measure its accurancy w
 pending
 ```
 
+### Details of implementation 
+
+Please pay attention to the points described below during your implementation. 
+
+- Be aware of the order of channels (colors for classification task), which can be RGB, BGR, or others. 
+- Be aware that similar syntax (e.g., function with same/similar name) in the different framework may have different meanings. Please check the low-level implementation if needed. 
+- Be aware of the hidden mechanism (e.g., default interpolation used in Resize function).
+- Avoid hand-crafting any functions. There are many details in these frameworks that you could miss procedures in your hand-crafted functions. It is a critical lesson I learned by sacrificing ample time. Save your time and check the official documentation first. 
+- Pay great attention to the preprocessing procedure for every pre-trained model released. It is somehow tedious work, but it matters to obtain the correct results of the analysis. 
+
+Due to the stochastic nature of machine learning program, it may be ambiguous for us to recognize some implementation errors. However, low accuracy should be a practical indication that there is something implemented inappropriately in our tool. Do make sure our tool functions normally by conducting unit tests periodically. 
+
 ## Acknowledgments
 
-* This repository utilizes (calls) following tools during execution: foolbox (https://github.com/bethgelab/foolbox), ...
-* More 
+* This repository utilizes (calls) following tools during execution: foolbox (https://github.com/bethgelab/foolbox)
+* Jie M. Zhang, Mark Harman, Lei Ma, and Yang Liu. 2019. Machine Learning Testing: Survey, Landscapes and Horizons is inspriational kickstart for people are interested in deep learning test yet not familiar with the topic. 
