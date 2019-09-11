@@ -96,14 +96,22 @@ Please pay attention to the points described below during your implementation.
 - Be aware of the hidden mechanism (e.g., default interpolation used in Resize function).
 - Avoid hand-crafting any functions. There are many details in these frameworks that you could miss procedures in your hand-crafted functions. It is a critical lesson I learned by sacrificing ample time. Save your time and check the official documentation first. 
 - Pay great attention to the preprocessing procedure for every pre-trained model released. It is somehow tedious work, but it matters to obtain the correct results of the analysis. 
+- If time available, understanding some widely-utilized models (e.g., ResNet and MobileNet), different preprocessing process, and basic adversarial attacks (e.g., either gradient-based approach like FGSM, Fast Grident Sign Method, or optimization-based like Jacobian-based Saliency Map Attack) will be very helpful.
 
 Due to the stochastic nature of machine learning program, it may be ambiguous for us to recognize some implementation errors. However, low accuracy should be a practical indication that there is something implemented inappropriately in our tool. Do make sure our tool functions normally by conducting unit tests periodically. 
 
 ### Current challenges and progress 
 
-More description
+Challenges:
+- It is still difficult to automatically conduct preprocessing for all frameworks. The way to handle preprocessing in a uniform method needed to be considered and appropriately tackled. 
+- Currently, I am dealing with issues within the preprocessing procedure of TensorFlow pre-trained models. 
+
+Progress (or future works needed):
+- Accuracy measurement on mxnet/caffe is not yet implemented. However, it should be easy programming tasks. 
+- Include top-5 error for accuracy measurement of Imagnet.
+- Include robustness (try local adversarial robustness first) for a simple task (MNIST classification). Call <b>Foolbox</b> for generating adversarial samples (I can sucessfully generate adversarial samples on Linux server, should not be a problem). 
 
 ## Acknowledgments
 
 * This repository utilizes (calls) following tools during execution: foolbox (https://github.com/bethgelab/foolbox)
-* Jie M. Zhang, Mark Harman, Lei Ma, and Yang Liu. 2019. Machine Learning Testing: Survey, Landscapes and Horizons is inspriational kickstart for people are interested in deep learning test yet not familiar with the topic. 
+* <b>Jie M. Zhang, Mark Harman, Lei Ma, and Yang Liu. 2019. Machine Learning Testing: Survey, Landscapes and Horizons</b> is inspriational kickstart for people are interested in deep learning test yet not familiar with the topic. 
