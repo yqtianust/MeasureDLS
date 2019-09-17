@@ -17,7 +17,7 @@ from ..dataset_prepare import load_imagenet_val_dataset
 
 class AccurancyMeasurer():
 
-    def __init__(self, dataset_type, transform=None, is_input_flatten=True, preprocess=None):
+    def __init__(self, dataset_type, transform=None, is_input_flatten=True, preprocess=None, k_degree=1):
         """
         Three tasks are accomplished at the initialization of an AccurancyMeasurer instance:
         1. Check whether dataset_type given from instatitation is valid (has been implemented)
@@ -31,6 +31,7 @@ class AccurancyMeasurer():
         self.transform = transform
         self.is_input_flatten = is_input_flatten
         self.preprocess = preprocess
+        self.k_degree = k_degree
 
         self.loader = None
         self.dataset = None
@@ -58,9 +59,8 @@ class AccurancyMeasurer():
             self.dataset = torchvision.datasets.CIFAR10(root='./data', train=False, transform=self.transform, download=True)
             self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=self.batch_size, shuffle=False)
         elif self.dataset_type == 'IMAGENET':
-            # self.dataset = torchvision.datasets.ImageNet(root='./data', split='val',transform=self.transform, download=True)
-            # self.loader = torch.utils.data.DataLoader(dataset=self.dataset, batch_size=1000, shuffle=False)
-            
+            ''' DEBUG code segment, which should be abandoned
+ 
             # Check the existence of 'x_val.npy' and 'y_val.npy' 
             # If required files are not found, raise FileNotFoundError 
             import os, errno # lazy import 
@@ -72,23 +72,25 @@ class AccurancyMeasurer():
                 raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), file_path)
 
             # Otherwise, load some data
-            num_of_samples = 1000
-            x, y = load_imagenet_val_dataset(num_of_samples)
+            x, y = load_imagenet_val_dataset(self.num_of_samples)
             x = np.transpose(x, (0, 3, 1, 2))
 
-            import torchvision.transforms as transforms # lazy import 
-            IMAGENET_TRANSFORM = transforms.Compose([
-                transforms.Normalize(
-                    mean=[0.485, 0.456, 0.406],
-                    std=[0.229, 0.224, 0.225])
-            ])
-
             tensor_x = torch.from_numpy(x)
-            tensor_x = IMAGENET_TRANSFORM(tensor_x)
-            
             tensor_y = torch.from_numpy(y)
-            self.dataset = torch.utils.data.TensorDataset(tensor_x,tensor_y) # create your datset
-            self.loader = torch.utils.data.DataLoader(self.dataset, batch_size=num_of_samples) # create your dataloader
+
+            import torchvision.transforms.functional as F # lazy import
+            normalized_tensor_x = torch.empty(tensor_x.shape)
+            for i, sample in enumerate(tensor_x):
+                sample = sample /255
+                normalized_sample = F.normalize(sample, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+                normalized_tensor_x[i] = normalized_sample
+            
+            self.dataset = torch.utils.data.TensorDataset(normalized_tensor_x, tensor_y) # create your datset
+            '''
+            
+            # Use ImageFolder here 
+            self.dataset = torchvision.datasets.ImageFolder('data/val', transform=self.transform) 
+            self.loader = torch.utils.data.DataLoader(self.dataset, batch_size=self.batch_size) # create your dataloader
 
     def _set_Keras_dataset(self):
         """
@@ -164,14 +166,25 @@ class AccurancyMeasurer():
                 
                 return accurancy
 
+    def _measure_top_k_accurancy(self, y_true, y_pred, k=1):
+        argsorted_y = np.argsort(y_pred)[:,-k:]
+        return np.any(argsorted_y.T == y_true.argmax(axis=1), axis=0).mean()
 
     def _measure_KerasModel_accurancy(self, dataset_type, model):
         datas, labels = self.dataset
         if not (self.preprocess is None):
             datas = self.preprocess(datas)
+        
+        from keras.utils import to_categorical #lazy import 
+        labels_one_hot = to_categorical(labels, 1000)
+        predictions = model.forward(datas)
+        top_k_acc = self._measure_top_k_accurancy(labels_one_hot, predictions, k=self.k_degree)
+        
+        '''
         self.dataset = (datas, labels)
         acc = model.evaluate(self.dataset)
-        return acc 
+        '''
+        return top_k_acc
 
     def _measure_TensorFlowModel_accurancy(self, dataset_type, model):
         datas, labels = self.dataset

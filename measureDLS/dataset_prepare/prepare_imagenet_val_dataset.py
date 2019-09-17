@@ -21,7 +21,7 @@ def x_val_prepare():
 
     Please unzip and place your images in the relative path 'data/img_val'
     """
-    path = 'temp_extract'
+    path = 'data/img_val'
     fns = os.listdir(path)
     fns.sort()
     fns = [path + "/" + fn for fn in fns if '.JPEG' in fn] # Filter out files without '.JPEG' 
@@ -41,7 +41,7 @@ def x_val_prepare():
         height, width, _ = img.shape
         new_height = height * 256 // min(img.shape[:2])
         new_width = width * 256 // min(img.shape[:2])
-        img = cv2.resize(img, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+        img = cv2.resize(img, (new_width, new_height), interpolation=cv2.INTER_CUBIC) # keras
 
         # Crop
         height, width, _ = img.shape
@@ -50,12 +50,12 @@ def x_val_prepare():
         img = img[starty:starty+224,startx:startx+224]
         assert img.shape[0] == 224 and img.shape[1] == 224, (img.shape, height, width)
 
-        # Save (as RGB)
-        x_val[i,:,:,:] = img[:,:,::-1]
+        # Save
+        x_val[i,:,:,:] = img[:,:,::-1] # keras (as RGB)
 
     # Save all val dataset
     np.save("data/x_val.npy", x_val)
-    print('finish extraction')
+    print('Finish extraction: x_val.npy')
 
 def y_val_prepare():
     """
@@ -95,6 +95,7 @@ def y_val_prepare():
     y_val = np.array([synset_to_keras_idx[original_idx_to_synset[idx]] for idx in y_val])
     f.close()
 
+    print('Finish extraction: y_val.npy')
     np.save("data/y_val.npy", y_val)
 
 def x_val_load():
