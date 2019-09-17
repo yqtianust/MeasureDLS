@@ -80,6 +80,18 @@ accurancy_measurer = measureDLS.measurement.AccurancyMeasurer('IMAGENET', is_inp
 acc = accurancy_measurer.measure_accurancy(wrapped_model)
 ```
 
+Use pretrained model (e.g., vgg19) in Keras and measure its top-5 accurany with ImageNet dataset
+``` python 
+from keras.applications.vgg19 import VGG19
+from keras.applications.vgg19 import preprocess_input 
+
+k = 5
+user_model = VGG19(weights='imagenet')
+wrapped_model = measureDLS.models.KerasModel(user_model, num_classes=1000)
+accurancy_measurer = measureDLS.measurement.AccurancyMeasurer('IMAGENET', is_input_flatten=False, preprocess=preprocess_input, k_degree=k)
+acc = accurancy_measurer.measure_accurancy(wrapped_model)
+```
+
 Use pretrained model (e.g., mobilenet) in tensorflow and measure its accurancy with ImageNet dataset
 ``` python 
 pending
