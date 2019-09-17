@@ -113,7 +113,7 @@ Challenges:
 
 Progress (or future works needed):
 - Accuracy measurement on mxnet/caffe is not yet implemented. However, it should be easy programming tasks. 
-- Include top-5 error for accuracy measurement of Imagnet.
+- Include top-5 error for accuracy measurement of Imagnet (I have doned that for Keras, please refer to measureDLS/measurement/accurancy.py).
 - Include robustness (try local adversarial robustness first) for a simple task (MNIST classification). Call <b>Foolbox</b> for generating adversarial samples (I can sucessfully generate adversarial samples on Linux server, should not be a problem). 
 
 ## Acknowledgments
