@@ -87,6 +87,11 @@ pending
 
 ## Details of implementation 
 
+### Recommandations (for enhancing productivity)
+
+- Conduct unit tests periodically
+- Use 'screen' in Linux, which enables you to place time-consuming tasks (e.g., data processing or model training) in an additional screen channel and continue to work on other tasks simultaneously. Besides, 'screen' allows you to run experiments even after the disconnection of ssh. 
+
 ### Something you need to pay attention
 
 Please pay attention to the points described below during your implementation. 
@@ -98,7 +103,7 @@ Please pay attention to the points described below during your implementation.
 - Pay great attention to the preprocessing procedure for every pre-trained model released. It is somehow tedious work, but it matters to obtain the correct results of the analysis. 
 - If time available, understanding some widely-utilized models (e.g., ResNet and MobileNet), different preprocessing process, and basic adversarial attacks (e.g., either gradient-based approach like FGSM, Fast Grident Sign Method, or optimization-based like Jacobian-based Saliency Map Attack) will be very helpful.
 
-Due to the stochastic nature of machine learning program, it may be ambiguous for us to recognize some implementation errors. However, low accuracy should be a practical indication that there is something implemented inappropriately in our tool. Do make sure our tool functions normally by conducting unit tests periodically. 
+Due to the stochastic nature of machine learning program, it may be ambiguous for us to recognize some implementation errors. However, low accuracy should be a practical indication that there is something implemented inappropriately in our tool. 
 
 ### Current challenges and progress 
 
