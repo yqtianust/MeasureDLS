@@ -84,6 +84,45 @@ class TestTensorFlowEager(unittest.TestCase):
         end = time.time()
         print('robustness time', end - start)
 
+    def test_imagenet_vgg19(self):
+        print('*' * 20)
+        print('test_imagenet_vgg19')
+
+        tf.keras.backend.set_learning_phase(0)
+        model = tf.keras.applications.VGG19()
+        model.trainable = False
+        dataset_original = self.imagenet_dataset()
+        x_original = dataset_original[0]
+        y_true = dataset_original[1]
+        mean = (103.939, 116.779, 123.68)
+        std = (1, 1, 1)
+        x_preprocessed = (x_original[..., ::-1] - mean) / std
+        dataset_preprocessed = (x_preprocessed, y_true)
+        dataset_original_small = (x_original[:5], y_true[:5])
+        bounds = (0, 255)
+
+        measure_model = TensorFlowEagerModel(model)
+
+        start = time.time()
+        accuracy_top_1 = Accuracy(k=1)
+        accuracy_top_5 = Accuracy(k=5)
+        measure_model.predict(dataset_preprocessed, [accuracy_top_1.update, accuracy_top_5.update])
+        self.assertAlmostEqual(accuracy_top_1.accuracy, 0.65)
+        self.assertAlmostEqual(accuracy_top_5.accuracy, 0.85)
+        end = time.time()
+        print('accuracy time', end - start)
+
+        neuron_coverage = NeuronCoverage(threshold=0.3)
+        measure_model.intermediate_layer_outputs(x_preprocessed, [neuron_coverage.update])
+        self.assertAlmostEqual(neuron_coverage.neuron_coverage, 0.19080021774632552)
+
+        start = time.time()
+        robustness = Robustness(bounds)
+        measure_model.adversarial_samples(dataset_original_small, bounds, [robustness.update, utils.draw_adversarial_samples], preprocessing=(mean, std))
+        self.assertAlmostEqual(robustness.success_rate, 1)
+        end = time.time()
+        print('robustness time', end - start)
+
     def test_imagenet_resnet50_v2(self):
         print('*' * 20)
         print('test_imagenet_resnet50_v2')

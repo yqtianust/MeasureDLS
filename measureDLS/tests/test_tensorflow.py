@@ -27,7 +27,7 @@ class TestTensorFlow(unittest.TestCase):
             path = dir + '/' + files[i]
             image_raw = tf.io.read_file(path)
             image = tf.image.decode_image(image_raw)
-            if preprocessing == 'vgg16':
+            if preprocessing == 'vgg16' or preprocessing == 'vgg19':
                 image = self._aspect_preserving_resize(image, 256)
                 image = self._central_crop([image], height, width)[0]
                 image.set_shape([height, width, 3])
@@ -138,6 +138,49 @@ class TestTensorFlow(unittest.TestCase):
         neuron_coverage = NeuronCoverage(threshold=0.4)
         measure_model.intermediate_layer_outputs(x_preprocessed, [neuron_coverage.update])
         self.assertAlmostEqual(neuron_coverage.neuron_coverage, 0.12775790101371498)
+
+        start = time.time()
+        robustness = Robustness(bounds)
+        measure_model.adversarial_samples(dataset_original_small, bounds, [robustness.update, utils.draw_adversarial_samples], preprocessing=(mean, std))
+        self.assertAlmostEqual(robustness.success_rate, 1)
+        end = time.time()
+        print('robustness time', end - start)
+
+        session.close()
+
+    def test_imagenet_vgg19(self):
+        print('*' * 20)
+        print('test_imagenet_vgg19')
+
+        session = tf.InteractiveSession(graph=tf.Graph())
+        input = tf.placeholder(tf.float32, shape=(None, 224, 224, 3))
+        logits, _ = vgg.vgg_19(input, is_training=False)
+        restorer = tf.train.Saver()
+        restorer.restore(session, utils.python_file_dir(__file__) + '/models/tensorflow_vgg_19/vgg_19.ckpt')
+        dataset_original = self.imagenet_dataset(224, 224, 'vgg19', 0)
+        x_original = dataset_original[0]
+        y_true = dataset_original[1]
+        mean = (123.68, 116.78, 103.94)
+        std = (1, 1, 1)
+        x_preprocessed = (x_original - mean) / std
+        dataset_preprocessed = (x_preprocessed, y_true)
+        dataset_original_small = (x_original[:5], y_true[:5])
+        bounds = (0, 255)
+
+        measure_model = TensorFlowModel(session, logits, input)
+
+        start = time.time()
+        accuracy_top_1 = Accuracy(k=1)
+        accuracy_top_5 = Accuracy(k=5)
+        measure_model.predict(dataset_preprocessed, [accuracy_top_1.update, accuracy_top_5.update])
+        self.assertAlmostEqual(accuracy_top_1.accuracy, 0.7)
+        self.assertAlmostEqual(accuracy_top_5.accuracy, 0.85)
+        end = time.time()
+        print('accuracy time', end - start)
+
+        neuron_coverage = NeuronCoverage(threshold=0.4)
+        measure_model.intermediate_layer_outputs(x_preprocessed, [neuron_coverage.update])
+        self.assertAlmostEqual(neuron_coverage.neuron_coverage, 0.15575666848121938)
 
         start = time.time()
         robustness = Robustness(bounds)

@@ -94,6 +94,42 @@ class TestPyTorch(unittest.TestCase):
         end = time.time()
         print('robustness time', end - start)
 
+    def test_imagenet_vgg19(self):
+        print('*' * 20)
+        print('test_imagenet_vgg19')
+
+        model = torchvision.models.vgg19(pretrained=True)
+        dataset_preprocessed = self.imagenet_dataset(True)
+        x_preprocessed = dataset_preprocessed[:][0]
+        y_true = dataset_preprocessed[:][1]
+        dataset_original = self.imagenet_dataset(False)
+        x_original = dataset_original[:][0]
+        dataset_original_small = torch.utils.data.dataset.TensorDataset(x_original[:5], y_true[:5])
+        bounds = (0, 1)
+        num_classes = 1000
+
+        measure_model = PyTorchModel(model)
+
+        start = time.time()
+        accuracy_top_1 = Accuracy(k=1)
+        accuracy_top_5 = Accuracy(k=5)
+        measure_model.predict(dataset_preprocessed, [accuracy_top_1.update, accuracy_top_5.update])
+        self.assertAlmostEqual(accuracy_top_1.accuracy, 0.9)
+        self.assertAlmostEqual(accuracy_top_5.accuracy, 0.9)
+        end = time.time()
+        print('accuracy time', end - start)
+
+        neuron_coverage = NeuronCoverage(threshold=0.3)
+        measure_model.intermediate_layer_outputs(x_preprocessed, [neuron_coverage.update])
+        self.assertAlmostEqual(neuron_coverage.neuron_coverage, 0.27585737615677736)
+
+        start = time.time()
+        robustness = Robustness(bounds)
+        measure_model.adversarial_samples(dataset_original_small, bounds, num_classes, [robustness.update, utils.draw_adversarial_samples], preprocessing=(np.array(self.imagenet_dataset_mean()).reshape(3, 1, 1), np.array(self.imagenet_dataset_std()).reshape(3, 1, 1)))
+        self.assertAlmostEqual(robustness.success_rate, 1)
+        end = time.time()
+        print('robustness time', end - start)
+
     def test_imagenet_resnet50_v2(self):
         print('*' * 20)
         print('test_imagenet_resnet50_v2')
