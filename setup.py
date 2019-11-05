@@ -1,6 +1,6 @@
 import setuptools
 
-install_requires = ["numpy"]
+install_requires = ['numpy']
 
 setuptools.setup(
      name='measureDLS',  
@@ -14,8 +14,8 @@ setuptools.setup(
          'Programming Language :: Python :: 3',
          'License :: OSI Approved :: MIT License',
          'Operating System :: OS Independent',
-         "Intended Audience :: Science/Research",
-         "Topic :: Scientific/Engineering :: Artificial Intelligence",
+         'Intended Audience :: Science/Research',
+         'Topic :: Scientific/Engineering :: Artificial Intelligence',
      ],
      install_requires=install_requires,
 )

@@ -46,7 +46,7 @@ class TestTensorFlow(unittest.TestCase):
                 image = session.run(image)
                 session.close()
             else:
-                raise Exception("Invalid preprocessing", preprocessing)
+                raise Exception('Invalid preprocessing', preprocessing)
             x[i] = image
             y[i] = int(files[i].split('_')[-1].split('.')[0]) + label_offset
         return x, y
@@ -290,8 +290,8 @@ class TestTensorFlow(unittest.TestCase):
         session = tf.InteractiveSession(graph=tf.Graph())
         restorer = tf.train.import_meta_graph(utils.python_file_dir(__file__) + '/models/tensorflow_cifar10_simple/tensorflow_cifar10_simple.meta')
         restorer.restore(session, tf.train.latest_checkpoint(utils.python_file_dir(__file__) + '/models/tensorflow_cifar10_simple/'))
-        input = session.graph.get_tensor_by_name("Placeholder:0")
-        logits = session.graph.get_tensor_by_name("fc2/add:0")
+        input = session.graph.get_tensor_by_name('Placeholder:0')
+        logits = session.graph.get_tensor_by_name('fc2/add:0')
         dataset = self.cifar10_dataset()
         x = dataset[0]
         y_true = dataset[1]
@@ -327,8 +327,8 @@ class TestTensorFlow(unittest.TestCase):
         session = tf.InteractiveSession(graph=tf.Graph())
         restorer = tf.train.import_meta_graph(utils.python_file_dir(__file__) + '/models/tensorflow_mnist_simple/tensorflow_mnist_simple.meta')
         restorer.restore(session, tf.train.latest_checkpoint(utils.python_file_dir(__file__) + '/models/tensorflow_mnist_simple/'))
-        input = session.graph.get_tensor_by_name("Placeholder:0")
-        logits = session.graph.get_tensor_by_name("fc2/add:0")
+        input = session.graph.get_tensor_by_name('Placeholder:0')
+        logits = session.graph.get_tensor_by_name('fc2/add:0')
         dataset = self.mnist_dataset()
         x = dataset[0]
         y_true = dataset[1]

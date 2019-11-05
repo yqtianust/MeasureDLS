@@ -87,7 +87,7 @@ class NeuronCoverage:
             elif self._features_index == 0:
                 neuron_output = intermediate_layer_output_single_input[neuron_id_in_this_layer]
             else:
-                raise Exception("Invalid features index", self._features_index)
+                raise Exception('Invalid features index', self._features_index)
             mean = np.mean(neuron_output)
             for threshold in self._thresholds:
                 if mean > threshold:

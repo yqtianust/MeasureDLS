@@ -36,8 +36,8 @@ class TestPyTorch(unittest.TestCase):
         def __len__(self):
             return len(self._y)
 
-        def __getitem__(self, idx):
-            path = self._dir + '/' + self._filenames[idx]
+        def __getitem__(self, index):
+            path = self._dir + '/' + self._filenames[index]
             x = PIL.Image.open(path)
             x = x.convert('RGB')
             transforms = torchvision.transforms.Compose([
@@ -48,7 +48,7 @@ class TestPyTorch(unittest.TestCase):
             x = transforms(x)
             if self._preprocess:
                 x = torchvision.transforms.Normalize(mean=self.mean, std=self.std)(x)
-            y = self._y[idx]
+            y = self._y[index]
             return x, y
 
     def cifar10_dataset(self):

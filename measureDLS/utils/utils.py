@@ -6,7 +6,7 @@ import numpy as np
 
 
 def readable_time_str():
-    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
 
 
 def python_file_dir(file):

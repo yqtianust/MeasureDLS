@@ -18,7 +18,7 @@ class PyTorchModel:
         self._model.eval()
         self._model.to(self._device)
 
-    def predict(self, dataset, callbacks, batch_size=256):
+    def predict(self, dataset, callbacks, batch_size=64):
         dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size)
         with torch.no_grad():
             for data, labels in dataloader:
@@ -28,7 +28,7 @@ class PyTorchModel:
                 for callback in callbacks:
                     callback(labels, y_mini_batch_pred)
 
-    def intermediate_layer_outputs(self, dataset, callbacks, batch_size=256):
+    def intermediate_layer_outputs(self, dataset, callbacks, batch_size=32):
         dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size)
         y_mini_batch_outputs = []
         hook_handles = []
@@ -51,24 +51,26 @@ class PyTorchModel:
         for handle in hook_handles:
             handle.remove()
 
-    def adversarial_samples(self, dataset, num_tries, bounds, num_classes, callbacks, batch_size=256, preprocessing=(0, 1), attack=foolbox.attacks.FGSM, criterion=foolbox.criteria.Misclassification(), distance=foolbox.distances.MSE, threshold=None):
+    def adversarial_samples(self, dataset, num_tries, bounds, num_classes, callbacks, batch_size=16, preprocessing=(0, 1), attack=foolbox.attacks.FGSM, criterion=foolbox.criteria.Misclassification(), distance=foolbox.distances.MSE, threshold=None):
         with warnings.catch_warnings():
-            warnings.simplefilter("ignore", category=DeprecationWarning)
+            warnings.simplefilter('ignore', category=DeprecationWarning)
             foolbox_model = foolbox.models.PyTorchModel(self._model, bounds, num_classes, preprocessing=preprocessing, device=self._device)
         attack = attack(foolbox_model, criterion, distance, threshold)
         dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size)
         for data, labels in dataloader:
             data = utils.to_numpy(data)
             labels = utils.to_numpy(labels)
-            adversarials = attack(data, labels)
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore', category=UserWarning)
+                adversarials = attack(data, labels)
             tries = []
             for i in range(data.shape[0]):
                 if (data[i] == adversarials[i]).all():
                     continue
                 tries.append(i)
-            if (len(tries) == 0):
+            if len(tries) == 0:
                 continue
-            if (num_tries < len(tries)):
+            if num_tries < len(tries):
                 tries = tries[:num_tries]
             data_filtered = np.empty(shape=((len(tries),) + data.shape[1:]))
             adversarials_filtered = np.empty(shape=((len(tries),) + adversarials.shape[1:]))
