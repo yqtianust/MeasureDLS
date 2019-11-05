@@ -1,7 +1,12 @@
 import os
+import time
 
 import matplotlib.pyplot as plt
 import numpy as np
+
+
+def readable_time_str():
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
 
 def python_file_dir(file):
@@ -31,7 +36,7 @@ def draw_adversarial_samples(origins, adversarials):
         plt.subplot(1, 3, 2)
         plt.imshow(adversarial)
         plt.subplot(1, 3, 3)
-        plt.imshow(adversarial - origin)
+        plt.imshow(np.abs(adversarial - origin))
         plt.show()
 
 

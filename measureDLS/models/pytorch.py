@@ -1,8 +1,9 @@
 from __future__ import absolute_import
 
-import time
+import warnings
 
 import foolbox
+import numpy as np
 import torch
 
 import measureDLS.utils as utils
@@ -27,8 +28,8 @@ class PyTorchModel:
                 for callback in callbacks:
                     callback(labels, y_mini_batch_pred)
 
-    def intermediate_layer_outputs(self, x, callbacks, batch_size=256):
-        dataloader = torch.utils.data.DataLoader(x, batch_size=batch_size)
+    def intermediate_layer_outputs(self, dataset, callbacks, batch_size=256):
+        dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size)
         y_mini_batch_outputs = []
         hook_handles = []
         intermediate_layers = self._intermediate_layers(self._model)
@@ -38,36 +39,49 @@ class PyTorchModel:
 
             handle = intermediate_layer.register_forward_hook(hook)
             hook_handles.append(handle)
-        intermediate_layer_outputs_time = 0
-        calc_time = 0
         with torch.no_grad():
             for data in dataloader:
-                start = time.time()
+                if isinstance(data, list):
+                    data = data[0]
                 y_mini_batch_outputs.clear()
                 data = data.to(self._device)
                 self._model(data)
-                end = time.time()
-                intermediate_layer_outputs_time += end - start
-                start = time.time()
                 for callback in callbacks:
                     callback(y_mini_batch_outputs, 0)
-                end = time.time()
-                calc_time += end - start
-        print('intermediate layer outputs time', intermediate_layer_outputs_time)
-        print('calc time', calc_time)
         for handle in hook_handles:
             handle.remove()
 
-    def adversarial_samples(self, dataset, bounds, num_classes, callbacks, batch_size=256, preprocessing=(0, 1), attack=foolbox.attacks.GradientAttack, criterion=foolbox.criteria.Misclassification(), distance=foolbox.distances.MSE, threshold=None):
-        foolbox_model = foolbox.models.PyTorchModel(self._model, bounds, num_classes, preprocessing=preprocessing, device=self._device)
+    def adversarial_samples(self, dataset, num_tries, bounds, num_classes, callbacks, batch_size=256, preprocessing=(0, 1), attack=foolbox.attacks.FGSM, criterion=foolbox.criteria.Misclassification(), distance=foolbox.distances.MSE, threshold=None):
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=DeprecationWarning)
+            foolbox_model = foolbox.models.PyTorchModel(self._model, bounds, num_classes, preprocessing=preprocessing, device=self._device)
         attack = attack(foolbox_model, criterion, distance, threshold)
         dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size)
         for data, labels in dataloader:
             data = utils.to_numpy(data)
             labels = utils.to_numpy(labels)
             adversarials = attack(data, labels)
+            tries = []
+            for i in range(data.shape[0]):
+                if (data[i] == adversarials[i]).all():
+                    continue
+                tries.append(i)
+            if (len(tries) == 0):
+                continue
+            if (num_tries < len(tries)):
+                tries = tries[:num_tries]
+            data_filtered = np.empty(shape=((len(tries),) + data.shape[1:]))
+            adversarials_filtered = np.empty(shape=((len(tries),) + adversarials.shape[1:]))
+            for i in range(len(tries)):
+                data_filtered[i] = data[tries[i]]
+                adversarials_filtered[i] = adversarials[tries[i]]
+            data = data_filtered
+            adversarials = adversarials_filtered
             for callback in callbacks:
                 callback(data, adversarials)
+            num_tries -= len(tries)
+            if num_tries == 0:
+                break
 
     def _intermediate_layers(self, module, entrypoint=True):
         intermediate_layers = []
@@ -81,8 +95,6 @@ class PyTorchModel:
                     continue
                 intermediate_layers.append(submodule)
         if entrypoint:
-            for intermediate_layer in intermediate_layers:
-                print(intermediate_layer)
             filtered_intermediate_layers = []
             for i in range(len(intermediate_layers)):
                 if i == len(intermediate_layers) - 1:
@@ -95,7 +107,4 @@ class PyTorchModel:
                     continue
                 filtered_intermediate_layers.append(intermediate_layers[i])
             intermediate_layers = filtered_intermediate_layers
-            print('$' * 50)
-            for intermediate_layer in intermediate_layers:
-                print(intermediate_layer)
         return intermediate_layers
