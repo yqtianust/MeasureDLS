@@ -21,7 +21,6 @@ class NeuronCoverage:
         intermediate_layer_outputs_new = []
         for intermediate_layer_output in intermediate_layer_outputs:
             intermediate_layer_output = utils.to_numpy(intermediate_layer_output)
-            intermediate_layer_output = (intermediate_layer_output - intermediate_layer_output.min()) / (intermediate_layer_output.max() - intermediate_layer_output.min())
             intermediate_layer_outputs_new.append(intermediate_layer_output)
         intermediate_layer_outputs = intermediate_layer_outputs_new
         if len(self._results.keys()) == 0:
@@ -82,6 +81,7 @@ class NeuronCoverage:
             layer_id = self._neuron_id_to_layer_id_dict[neuron_id]
             neuron_id_in_this_layer = neuron_id - self._layer_neuron_start_id_list[layer_id]
             intermediate_layer_output_single_input = intermediate_layer_outputs[layer_id][input_id]
+            intermediate_layer_output_single_input = (intermediate_layer_output_single_input - intermediate_layer_output_single_input.min()) / (intermediate_layer_output_single_input.max() - intermediate_layer_output_single_input.min())
             if self._features_index == -1:
                 neuron_output = intermediate_layer_output_single_input[..., neuron_id_in_this_layer]
             elif self._features_index == 0:
