@@ -85,7 +85,7 @@ class TestPyTorch(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.650000)
         self.assertAlmostEqual(accuracy.get(5), 0.925000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.287567, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.597570, places=6)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_imagenet_vgg19(self):
@@ -108,7 +108,7 @@ class TestPyTorch(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.700000)
         self.assertAlmostEqual(accuracy.get(5), 0.925000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.261840, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.550014, places=6)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_imagenet_resnet50_v2(self):
@@ -131,7 +131,7 @@ class TestPyTorch(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.775000)
         self.assertAlmostEqual(accuracy.get(5), 1.000000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.086845, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.103692, places=6)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_imagenet_mobilenet_v2(self):
@@ -154,7 +154,7 @@ class TestPyTorch(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.675000)
         self.assertAlmostEqual(accuracy.get(5), 0.925000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.202426, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.273926, places=6)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_cifar10_simple(self):
@@ -200,7 +200,7 @@ class TestPyTorch(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.427500)
         self.assertAlmostEqual(accuracy.get(5), 0.906400)
-        self.assertAlmostEqual(neuron_coverage.get(0.6), 0.388889, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.6), 0.534188, places=6)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_mnist_simple(self):
@@ -238,7 +238,7 @@ class TestPyTorch(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.962200)
         self.assertAlmostEqual(accuracy.get(5), 0.998900)
-        self.assertAlmostEqual(neuron_coverage.get(0.7), 0.549505, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.7), 0.876238, places=6)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
 

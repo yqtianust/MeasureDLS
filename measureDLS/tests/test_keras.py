@@ -91,7 +91,7 @@ class TestKeras(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.575000)
         self.assertAlmostEqual(accuracy.get(5), 0.775000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.324314, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.554487, places=6)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_imagenet_vgg19(self):
@@ -117,7 +117,7 @@ class TestKeras(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.550000)
         self.assertAlmostEqual(accuracy.get(5), 0.825000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.299061, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.505920, places=6)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_imagenet_resnet50_v2(self):
@@ -143,7 +143,7 @@ class TestKeras(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.625000)
         self.assertAlmostEqual(accuracy.get(5), 0.875000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.445598, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.452325, places=6)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_imagenet_mobilenet_v2(self):
@@ -169,7 +169,7 @@ class TestKeras(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.675000)
         self.assertAlmostEqual(accuracy.get(5), 0.825000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.280826, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.296583, places=6)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_cifar10_simple(self):
@@ -194,7 +194,7 @@ class TestKeras(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.777400)
         self.assertAlmostEqual(accuracy.get(5), 0.985000)
-        self.assertAlmostEqual(neuron_coverage.get(0.8), 0.365546, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.8), 0.710084, places=6)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_mnist_simple(self):
@@ -219,7 +219,7 @@ class TestKeras(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.991000)
         self.assertAlmostEqual(accuracy.get(5), 1.000000)
-        self.assertAlmostEqual(neuron_coverage.get(0.6), 0.568376, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.6), 0.589744, places=6)
         self.assertAlmostEqual(robustness.success_rate, 0.6666666667)
 
 
