@@ -6,6 +6,7 @@
 
 ## Todo
 
+* [ ] GPU accelerate
 * [ ] save adversarial samples
 
 ## Undecided
