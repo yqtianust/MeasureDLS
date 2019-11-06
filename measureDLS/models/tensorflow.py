@@ -45,7 +45,7 @@ class TensorFlowModel:
         print('intermediate layer outputs time', intermediate_layer_outputs_time)
         print('calc time', calc_time)
 
-    def adversarial_samples(self, dataset, bounds, callbacks, batch_size=256, preprocessing=(0, 1), attack=foolbox.attacks.GradientAttack, criterion=foolbox.criteria.Misclassification(), distance=foolbox.distances.MSE, threshold=None):
+    def adversarial_samples(self, dataset, bounds, callbacks, batch_size=256, preprocessing=(0, 1), attack=foolbox.attacks.FGSM, criterion=foolbox.criteria.Misclassification(), distance=foolbox.distances.MSE, threshold=None):
         foolbox_model = foolbox.models.TensorFlowModel(self._input, self._logits, bounds, preprocessing=preprocessing)
         attack = attack(foolbox_model, criterion, distance, threshold)
         x = dataset[0]

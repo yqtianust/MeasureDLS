@@ -47,11 +47,11 @@ class KerasModel:
             warnings.simplefilter('ignore', category=RuntimeWarning)
             intermediate_layer_model.predict_generator(generator, callbacks=[Callback()])
 
-    def adversarial_samples(self, x, y, num_tries, bounds, callbacks, batch_size=16, preprocessing=(0, 1), attack=foolbox.attacks.GradientAttack, criterion=foolbox.criteria.Misclassification(), distance=foolbox.distances.MSE, threshold=None):
+    def adversarial_samples(self, x, y, num_tries, bounds, callbacks, batch_size=16, preprocessing=(0, 1), attack=foolbox.attacks.FGSM, criterion=foolbox.criteria.Misclassification(), distance=foolbox.distances.MSE, threshold=None):
         generator = SimpleDataGenerator(x, y, batch_size)
         return self.adversarial_samples_generator(generator, num_tries, bounds, callbacks, preprocessing=preprocessing, attack=attack, criterion=criterion, distance=distance, threshold=threshold)
 
-    def adversarial_samples_generator(self, generator, num_tries, bounds, callbacks, preprocessing=(0, 1), attack=foolbox.attacks.GradientAttack, criterion=foolbox.criteria.Misclassification(), distance=foolbox.distances.MSE, threshold=None):
+    def adversarial_samples_generator(self, generator, num_tries, bounds, callbacks, preprocessing=(0, 1), attack=foolbox.attacks.FGSM, criterion=foolbox.criteria.Misclassification(), distance=foolbox.distances.MSE, threshold=None):
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', category=DeprecationWarning)
             foolbox_model = foolbox.models.KerasModel(self._model, bounds, preprocessing=preprocessing)
