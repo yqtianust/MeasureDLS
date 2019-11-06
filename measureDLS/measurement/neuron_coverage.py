@@ -56,8 +56,8 @@ class NeuronCoverage:
             intermediate_layer_output = utils.to_numpy(intermediate_layer_output)
             intermediate_layer_outputs_new.append(intermediate_layer_output)
         intermediate_layer_outputs = intermediate_layer_outputs_new
-        for intermediate_layer_output in intermediate_layer_outputs:
-            np.save('/Users/zzh/Desktop/' + str(self._num_input), intermediate_layer_output)
+        for layer_id, intermediate_layer_output in enumerate(intermediate_layer_outputs):
+            np.save('/Users/zzh/Desktop/' + str(self._num_input) + '_' + str(layer_id), intermediate_layer_output)
 
     def report(self, *args):
         for threshold in self._thresholds:
