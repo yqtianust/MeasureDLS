@@ -1,9 +1,11 @@
 from __future__ import absolute_import
 
-import time
+import warnings
 from collections import OrderedDict
 
 import foolbox
+import numpy as np
+import tensorflow as tf
 
 
 class TensorFlowModel:
@@ -13,51 +15,62 @@ class TensorFlowModel:
         self._logits = logits
         self._input = input
 
-    def predict(self, dataset, callbacks, batch_size=256):
-        x = dataset[0]
-        y = dataset[1]
-        i = 0
-        while i < len(x):
-            data = x[i: i + batch_size]
-            labels = y[i: i + batch_size]
+    def predict(self, x, y, callbacks, batch_size=64):
+        index = 0
+        while index < len(x):
+            data = x[index:index + batch_size]
+            labels = y[index:index + batch_size]
             y_mini_batch_pred = self._session.run(self._logits, feed_dict={self._input: data})
             for callback in callbacks:
                 callback(labels, y_mini_batch_pred)
-            i += batch_size
+            index += batch_size
 
-    def intermediate_layer_outputs(self, x, callbacks, batch_size=256):
+    def intermediate_layer_outputs(self, x, callbacks, batch_size=32):
         intermediate_layers = self._intermediate_layers()
-        i = 0
-        intermediate_layer_outputs_time = 0
-        calc_time = 0
-        while i < len(x):
-            data = x[i: i + batch_size]
-            start = time.time()
+        index = 0
+        while index < len(x):
+            data = x[index:index + batch_size]
             y_mini_batch_outputs = self._session.run(intermediate_layers, feed_dict={self._input: data})
-            end = time.time()
-            intermediate_layer_outputs_time += end - start
-            start = time.time()
             for callback in callbacks:
                 callback(y_mini_batch_outputs, -1)
-            end = time.time()
-            calc_time += end - start
-            i += batch_size
-        print('intermediate layer outputs time', intermediate_layer_outputs_time)
-        print('calc time', calc_time)
+            index += batch_size
 
-    def adversarial_samples(self, dataset, bounds, callbacks, batch_size=256, preprocessing=(0, 1), attack=foolbox.attacks.FGSM, criterion=foolbox.criteria.Misclassification(), distance=foolbox.distances.MSE, threshold=None):
-        foolbox_model = foolbox.models.TensorFlowModel(self._input, self._logits, bounds, preprocessing=preprocessing)
+    def adversarial_samples(self, x, y, num_tries, bounds, callbacks, batch_size=16, preprocessing=(0, 1), attack=foolbox.attacks.FGSM, criterion=foolbox.criteria.Misclassification(), distance=foolbox.distances.MSE, threshold=None):
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', category=DeprecationWarning)
+            tf.get_logger().setLevel('ERROR')
+            foolbox_model = foolbox.models.TensorFlowModel(self._input, self._logits, bounds, preprocessing=preprocessing)
+            tf.get_logger().setLevel('DEBUG')
         attack = attack(foolbox_model, criterion, distance, threshold)
-        x = dataset[0]
-        y = dataset[1]
-        i = 0
-        while i < len(x):
-            data = x[i: i + batch_size]
-            labels = y[i: i + batch_size]
-            adversarials = attack(data, labels)
+        index = 0
+        while index < len(x):
+            data = x[index:index + batch_size]
+            labels = y[index:index + batch_size]
+            index += batch_size
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore', category=UserWarning)
+                adversarials = attack(data, labels)
+            tries = []
+            for i in range(data.shape[0]):
+                if (data[i] == adversarials[i]).all():
+                    continue
+                tries.append(i)
+            if len(tries) == 0:
+                continue
+            if num_tries < len(tries):
+                tries = tries[:num_tries]
+            data_filtered = np.empty(shape=((len(tries),) + data.shape[1:]))
+            adversarials_filtered = np.empty(shape=((len(tries),) + adversarials.shape[1:]))
+            for i in range(len(tries)):
+                data_filtered[i] = data[tries[i]]
+                adversarials_filtered[i] = adversarials[tries[i]]
+            data = data_filtered
+            adversarials = adversarials_filtered
             for callback in callbacks:
                 callback(data, adversarials)
-            i += batch_size
+            num_tries -= len(tries)
+            if num_tries == 0:
+                break
 
     def _intermediate_layers(self):
         ordered_tensors = self._ordered_tensors_in_graph(self._logits)
@@ -82,7 +95,6 @@ class TensorFlowModel:
             if 'Pad' in tensor.op.type:
                 continue
             tensors.append(tensor)
-        print(tensors)
         filtered_tensors = []
         for i in range(len(tensors)):
             if i == len(tensors) - 1:
@@ -99,7 +111,6 @@ class TensorFlowModel:
                 continue
             filtered_tensors.append(tensors[i])
         tensors = filtered_tensors
-        print(tensors)
         return tensors
 
     def _ordered_tensors_in_graph(self, tensor, entrypoint=True):

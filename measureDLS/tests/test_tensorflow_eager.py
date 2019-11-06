@@ -74,7 +74,7 @@ class TestTensorFlowEager(unittest.TestCase):
         model.trainable = False
         mean = (103.939, 116.779, 123.68)
         std = (1, 1, 1)
-        data_generator_preprocess = self.ImageNetValDataGenerator(transform=lambda x: (x[..., ::-1] - mean) / std)
+        data_generator_preprocess = self.ImageNetValDataGenerator(transform=lambda x:(x[..., ::-1] - mean) / std)
         data_generator_original = self.ImageNetValDataGenerator(batch_size=1)
         bounds = (0, 255)
 
@@ -100,7 +100,7 @@ class TestTensorFlowEager(unittest.TestCase):
         model.trainable = False
         mean = (103.939, 116.779, 123.68)
         std = (1, 1, 1)
-        data_generator_preprocess = self.ImageNetValDataGenerator(transform=lambda x: (x[..., ::-1] - mean) / std)
+        data_generator_preprocess = self.ImageNetValDataGenerator(transform=lambda x:(x[..., ::-1] - mean) / std)
         data_generator_original = self.ImageNetValDataGenerator(batch_size=1)
         bounds = (0, 255)
 
