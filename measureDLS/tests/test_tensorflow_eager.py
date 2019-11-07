@@ -220,7 +220,7 @@ class TestTensorFlowEager(unittest.TestCase):
         self.assertAlmostEqual(accuracy.get(1), 0.991000)
         self.assertAlmostEqual(accuracy.get(5), 1.000000)
         self.assertAlmostEqual(neuron_coverage.get(0.6), 0.589744, places=2)
-        self.assertAlmostEqual(robustness.success_rate, 0.3333333333333333)
+        self.assertAlmostEqual(robustness.success_rate, 0.6666666667)
 
 
 if __name__ == '__main__':

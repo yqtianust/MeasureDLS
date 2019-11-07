@@ -1,10 +1,10 @@
 import setuptools
 
-install_requires = ['numpy']
+install_requires = ['numpy', 'numba', 'foolbox', 'matplotlib', 'Pillow']
 
 setuptools.setup(
      name='measureDLS',  
-     version='0.1',
+     version='1.0',
      author='Zzh',
      author_email='zengzhihua1997@gmail.com',
      description='measureDLS',
