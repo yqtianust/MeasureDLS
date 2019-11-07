@@ -78,7 +78,7 @@ class TestMXNet(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.700000)
         self.assertAlmostEqual(accuracy.get(5), 0.950000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.597570, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.597570, places=2)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_imagenet_vgg19(self):
@@ -101,7 +101,7 @@ class TestMXNet(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.650000)
         self.assertAlmostEqual(accuracy.get(5), 0.925000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.549809, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.549809, places=2)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_imagenet_resnet50_v2(self):
@@ -124,7 +124,7 @@ class TestMXNet(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.775000)
         self.assertAlmostEqual(accuracy.get(5), 1.000000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.188258, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.188258, places=2)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_imagenet_mobilenet_v2(self):
@@ -147,7 +147,7 @@ class TestMXNet(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.725000)
         self.assertAlmostEqual(accuracy.get(5), 0.950000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.295334, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.295334, places=2)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_cifar10_simple(self):
@@ -179,7 +179,7 @@ class TestMXNet(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.687000)
         self.assertAlmostEqual(accuracy.get(5), 0.966600)
-        self.assertAlmostEqual(neuron_coverage.get(0.6), 0.470085, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.6), 0.470085, places=2)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_mnist_simple(self):
@@ -206,7 +206,7 @@ class TestMXNet(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.978700)
         self.assertAlmostEqual(accuracy.get(5), 0.999700)
-        self.assertAlmostEqual(neuron_coverage.get(0.8), 0.861386, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.8), 0.861386, places=2)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
 

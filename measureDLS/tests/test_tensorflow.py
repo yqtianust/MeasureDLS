@@ -133,13 +133,12 @@ class TestTensorFlow(unittest.TestCase):
         return x_test, y_test
 
     def test_imagenet_vgg16(self):
+        tf.get_logger().setLevel('ERROR')
         session = tf.compat.v1.InteractiveSession(graph=tf.Graph())
         input = tf.compat.v1.placeholder(tf.float32, shape=(None, 224, 224, 3))
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', category=DeprecationWarning)
-            tf.get_logger().setLevel('ERROR')
             logits, _ = vgg.vgg_16(input, is_training=False)
-            tf.get_logger().setLevel('DEBUG')
         restorer = tf.compat.v1.train.Saver()
         restorer.restore(session, utils.python_file_dir(__file__) + '/models/tensorflow_vgg_16/vgg_16.ckpt')
         mean = (123.68, 116.78, 103.94)
@@ -163,17 +162,16 @@ class TestTensorFlow(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.600000)
         self.assertAlmostEqual(accuracy.get(5), 0.925000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.630143, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.630143, places=2)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_imagenet_vgg19(self):
+        tf.get_logger().setLevel('ERROR')
         session = tf.compat.v1.InteractiveSession(graph=tf.Graph())
         input = tf.compat.v1.placeholder(tf.float32, shape=(None, 224, 224, 3))
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', category=DeprecationWarning)
-            tf.get_logger().setLevel('ERROR')
             logits, _ = vgg.vgg_19(input, is_training=False)
-            tf.get_logger().setLevel('DEBUG')
         restorer = tf.compat.v1.train.Saver()
         restorer.restore(session, utils.python_file_dir(__file__) + '/models/tensorflow_vgg_19/vgg_19.ckpt')
         mean = (123.68, 116.78, 103.94)
@@ -197,18 +195,17 @@ class TestTensorFlow(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.625000)
         self.assertAlmostEqual(accuracy.get(5), 0.925000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.576892, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.576892, places=2)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_imagenet_resnet50_v2(self):
+        tf.get_logger().setLevel('ERROR')
         session = tf.compat.v1.InteractiveSession(graph=tf.Graph())
         input = tf.compat.v1.placeholder(tf.float32, shape=(None, 299, 299, 3))
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', category=DeprecationWarning)
-            tf.get_logger().setLevel('ERROR')
             with tf.contrib.slim.arg_scope(resnet_v2.resnet_arg_scope()):
                 resnet_v2.resnet_v2_50(input, num_classes=1001, is_training=False)
-            tf.get_logger().setLevel('DEBUG')
         restorer = tf.compat.v1.train.Saver()
         restorer.restore(session, utils.python_file_dir(__file__) + '/models/tensorflow_resnet_v2_50/resnet_v2_50.ckpt')
         logits = session.graph.get_tensor_by_name('resnet_v2_50/predictions/Reshape:0')
@@ -233,10 +230,11 @@ class TestTensorFlow(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.750000)
         self.assertAlmostEqual(accuracy.get(5), 0.875000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.600558, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.600558, places=2)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_imagenet_mobilenet_v2(self):
+        tf.get_logger().setLevel('ERROR')
         graph = tf.Graph()
         with tf.io.gfile.GFile(utils.python_file_dir(__file__) + '/models/tensorflow_mobilenet_v2/mobilenet_v2_1.4_224_frozen.pb', 'rb') as f:
             graph_def = tf.compat.v1.GraphDef()
@@ -267,10 +265,11 @@ class TestTensorFlow(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.725000)
         self.assertAlmostEqual(accuracy.get(5), 0.900000)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.288900, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.288900, places=2)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_cifar10_simple(self):
+        tf.get_logger().setLevel('ERROR')
         session = tf.compat.v1.InteractiveSession(graph=tf.Graph())
         restorer = tf.compat.v1.train.import_meta_graph(utils.python_file_dir(__file__) + '/models/tensorflow_cifar10_simple/tensorflow_cifar10_simple.meta')
         restorer.restore(session, tf.train.latest_checkpoint(utils.python_file_dir(__file__) + '/models/tensorflow_cifar10_simple/'))
@@ -294,10 +293,11 @@ class TestTensorFlow(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.327100)
         self.assertAlmostEqual(accuracy.get(5), 0.820200)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.551282, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.551282, places=2)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
     def test_mnist_simple(self):
+        tf.get_logger().setLevel('ERROR')
         session = tf.compat.v1.InteractiveSession(graph=tf.Graph())
         restorer = tf.compat.v1.train.import_meta_graph(utils.python_file_dir(__file__) + '/models/tensorflow_mnist_simple/tensorflow_mnist_simple.meta')
         restorer.restore(session, tf.train.latest_checkpoint(utils.python_file_dir(__file__) + '/models/tensorflow_mnist_simple/'))
@@ -321,7 +321,7 @@ class TestTensorFlow(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy.get(1), 0.937700)
         self.assertAlmostEqual(accuracy.get(5), 0.997200)
-        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.591150, places=6)
+        self.assertAlmostEqual(neuron_coverage.get(0.3), 0.591150, places=2)
         self.assertAlmostEqual(robustness.success_rate, 1.000000)
 
 

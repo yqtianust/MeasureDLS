@@ -26,9 +26,7 @@ class TensorFlowEagerModel:
                 for callback in callbacks:
                     callback(labels, y_mini_batch_pred)
 
-        tf.get_logger().setLevel('ERROR')
         self._model.predict_generator(generator, callbacks=[Callback()])
-        tf.get_logger().setLevel('DEBUG')
 
     def intermediate_layer_outputs(self, x, callbacks, batch_size=32):
         generator = SimpleDataGenerator(x, None, batch_size)
@@ -43,9 +41,7 @@ class TensorFlowEagerModel:
 
         layer_names = self._intermediate_layer_names()
         intermediate_layer_model = tf.keras.Model(inputs=self._model.input, outputs=[self._model.get_layer(layer_name).output for layer_name in layer_names])
-        tf.get_logger().setLevel('ERROR')
         intermediate_layer_model.predict_generator(generator, callbacks=[Callback()])
-        tf.get_logger().setLevel('DEBUG')
 
     def adversarial_samples(self, x, y, num_tries, bounds, callbacks, batch_size=16, preprocessing=(0, 1), attack=foolbox.attacks.FGSM, criterion=foolbox.criteria.Misclassification(), distance=foolbox.distances.MSE, threshold=None):
         generator = SimpleDataGenerator(x, y, batch_size)

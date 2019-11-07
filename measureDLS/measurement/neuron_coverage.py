@@ -14,6 +14,11 @@ class NeuronCoverage:
         self._num_input = 0
 
     def update(self, intermediate_layer_outputs, features_index):
+        intermediate_layer_outputs_new = []
+        for intermediate_layer_output in intermediate_layer_outputs:
+            intermediate_layer_output = utils.to_numpy(intermediate_layer_output)
+            intermediate_layer_outputs_new.append(intermediate_layer_output)
+        intermediate_layer_outputs = intermediate_layer_outputs_new
         if len(self._results.keys()) == 0:
             current_global_neuron_id = 0
             for layer_id, intermediate_layer_output in enumerate(intermediate_layer_outputs):

@@ -38,9 +38,7 @@ class TensorFlowModel:
     def adversarial_samples(self, x, y, num_tries, bounds, callbacks, batch_size=16, preprocessing=(0, 1), attack=foolbox.attacks.FGSM, criterion=foolbox.criteria.Misclassification(), distance=foolbox.distances.MSE, threshold=None):
         with warnings.catch_warnings():
             warnings.simplefilter('ignore', category=DeprecationWarning)
-            tf.get_logger().setLevel('ERROR')
             foolbox_model = foolbox.models.TensorFlowModel(self._input, self._logits, bounds, preprocessing=preprocessing)
-            tf.get_logger().setLevel('DEBUG')
         attack = attack(foolbox_model, criterion, distance, threshold)
         index = 0
         while index < len(x):
